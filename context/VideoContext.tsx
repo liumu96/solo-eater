@@ -28,17 +28,19 @@ export const VideoProvider: React.FC<VideoProviderProps> = ({ children }) => {
   const [stream, setStream] = useState<MediaStream | null>(null);
 
   const requestCameraPermission = async () => {
-    try {
-      const videoStream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-      });
-      setStream(videoStream);
+    if (typeof window !== "undefined") {
+      try {
+        const videoStream = await window.navigator.mediaDevices.getUserMedia({
+          video: true,
+        });
+        setStream(videoStream);
 
-      if (videoRef.current) {
-        videoRef.current.srcObject = videoStream;
+        if (videoRef.current) {
+          videoRef.current.srcObject = videoStream;
+        }
+      } catch (error) {
+        console.error("Error accessing camera", error);
       }
-    } catch (error) {
-      console.error("Error accessing camera", error);
     }
   };
 

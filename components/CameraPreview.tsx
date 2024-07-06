@@ -8,15 +8,17 @@ const CameraPreview: React.FC = () => {
   // 获取摄像头权限并展示视频流
   useEffect(() => {
     const requestCameraPermission = async () => {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-        });
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
+      if (typeof window !== "undefined") {
+        try {
+          const stream = await window.navigator.mediaDevices.getUserMedia({
+            video: true,
+          });
+          if (videoRef.current) {
+            videoRef.current.srcObject = stream;
+          }
+        } catch (error) {
+          console.error("Error accessing camera", error);
         }
-      } catch (error) {
-        console.error("Error accessing camera", error);
       }
     };
     requestCameraPermission();
