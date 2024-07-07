@@ -2,6 +2,7 @@
 import { Button, TextField } from "@mui/material";
 import Link from "next/link";
 import React, { ChangeEvent, useEffect, useState } from "react";
+import { sendGAEvent } from "@next/third-parties/google";
 
 const HomePage = () => {
   const webTitle = "Video Chewing";
@@ -33,7 +34,8 @@ const HomePage = () => {
 
   const handleLogin = () => {
     localStorage.setItem("username", username);
-    // 在这里你可以添加逻辑将用户名传给后端接口
+    // upload username
+    sendGAEvent({ event: "new user", value: "username" });
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
