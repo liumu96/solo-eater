@@ -31,18 +31,6 @@ const PlayerPage: React.FC = () => {
   const [isEating, setIsEating] = useState(true);
   const threshold = 20; // Set your threshold value here
 
-  // const [testF, setTestF] = useState(0);
-  // useEffect(() => {
-  //   const updateFn = () => {
-  //     setTestF(Math.random() * 100);
-  //   };
-
-  //   const intervalId = setInterval(updateFn, 3000); // Update testF every 3 seconds
-
-  //   // Clean up the interval on component unmount
-  //   return () => clearInterval(intervalId);
-  // }, []);
-
   useEffect(() => {
     console.log(chewingFrequency, "chewingFrequency");
     if (chewingFrequency < threshold) {
@@ -108,7 +96,7 @@ const PlayerPage: React.FC = () => {
       </div>
       <VideoProvider>
         <div className="absolute w-full min-h-screen">
-          <ChewingTesting />
+          {/* <ChewingTesting /> */}
         </div>
       </VideoProvider>
     </div>
