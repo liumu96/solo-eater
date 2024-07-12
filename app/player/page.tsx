@@ -7,6 +7,14 @@ import DanmakuComp from "@/components/Danmaku";
 import ChewingTesting from "@/components/ChewingTesting";
 import { useData } from "@/context/DataContext";
 import { VideoProvider } from "@/context/VideoContext";
+// Import dynamic from next/dynamic
+import dynamic from 'next/dynamic';
+
+// Dynamically import the ChewingTesting component with SSR disabled
+const ChewingTestingNoSSR = dynamic(() => import('@/components/ChewingTesting'), {
+  ssr: false, // This disables server-side rendering for the component
+});
+
 const avatarList = [
   {
     name: "Eating Avatar",
@@ -96,7 +104,7 @@ const PlayerPage: React.FC = () => {
       </div>
       <VideoProvider>
         <div className="absolute w-full min-h-screen">
-          {/* <ChewingTesting /> */}
+          < ChewingTestingNoSSR />
         </div>
       </VideoProvider>
     </div>
