@@ -4,7 +4,6 @@ import React, { useEffect, useRef, useState } from "react";
 import YouTubePlayer from "@/components/YouTubePlayer";
 import BackButton from "@/components/BackButton";
 import DanmakuComp from "@/components/Danmaku";
-import ChewingTesting from "@/components/ChewingTesting";
 import { useData } from "@/context/DataContext";
 import { VideoProvider } from "@/context/VideoContext";
 // Import dynamic from next/dynamic
