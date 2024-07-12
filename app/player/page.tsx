@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import dynamic from 'next/dynamic';
 import YouTubePlayer from "@/components/YouTubePlayer";
 import BackButton from "@/components/BackButton";
