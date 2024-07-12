@@ -1,18 +1,12 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
+import dynamic from 'next/dynamic';
 import YouTubePlayer from "@/components/YouTubePlayer";
 import BackButton from "@/components/BackButton";
 import DanmakuComp from "@/components/Danmaku";
 import { useData } from "@/context/DataContext";
 import { VideoProvider } from "@/context/VideoContext";
-// Import dynamic from next/dynamic
-import dynamic from 'next/dynamic';
-
-// Dynamically import the ChewingTesting component with SSR disabled
-const ChewingTestingNoSSR = dynamic(() => import('@/components/ChewingTesting'), {
-  ssr: false, // This disables server-side rendering for the component
-});
 
 const avatarList = [
   {
@@ -32,6 +26,11 @@ const avatarList = [
     img: "/avatar-04.png",
   },
 ];
+
+// Dynamically import the ChewingTesting component with SSR disabled
+const ChewingTestingNoSSR = dynamic(() => import('@/components/ChewingTesting'), {
+  ssr: false, // This disables server-side rendering for the component
+});
 
 const PlayerPage: React.FC = () => {
   const { videoLink, chewingFrequency } = useData();
@@ -103,7 +102,7 @@ const PlayerPage: React.FC = () => {
       </div>
       <VideoProvider>
         <div className="absolute w-full min-h-screen">
-          < ChewingTestingNoSSR />
+          <ChewingTestingNoSSR />
         </div>
       </VideoProvider>
     </div>
