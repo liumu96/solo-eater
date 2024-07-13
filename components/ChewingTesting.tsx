@@ -74,7 +74,7 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
       } else if (gazingStartTime) {
         const elapsedTime = (Date.now() - gazingStartTime) / 1000; // time in seconds
         if (
-          elapsedTime > 10 &&
+          elapsedTime > 5 &&
           (chewingFrequency === null || chewingFrequency < 10)
         ) {
           setReminder(
@@ -175,7 +175,7 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
         className="absolute top-0 left-0 w-full h-full object-contain z-20 pointer-events-none"
       />
       <p className="absolute right-0 text-red">
-        Frequency is: {chewingFrequency}
+        Frequency is: {chewingFrequency !== null ? chewingFrequency : "N/A"}
       </p>
     </div>
   );
