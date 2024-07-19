@@ -8,14 +8,16 @@ declare global {
   type Point = {
     x: number;
     y: number;
+    z?: number;
   };
 
   // 定义一个 Keypoint 类型，表示一个关键点，包括 x, y 和 name
   type Keypoint = {
     x: number;
     y: number;
-    name: string;
-  };
+    z?: number;
+    name?: string;
+  }
 
   // 定义一个 Prediction 类型，表示一个预测，包括关键点
   type Prediction = {
@@ -25,9 +27,15 @@ declare global {
   // 定义返回类型，用于 getMesh 函数
   type MeshResult = {
     euclideanDistance: { value: number; time: Date } | null;
-    eyePoint: Keypoint | null;
+    yaw: number | null;
+    turn: number | null;
+    leftEyePoint: Keypoint | null;
+    rightEyePoint: Keypoint | null;
+    noseTip: Keypoint | null;
+    leftNose: Keypoint | null;
+    rightNose: Keypoint | null;
     namedKeypoints: { [key: string]: Keypoint[] } | null;
-  };
+  }
 
   // 定义视频引用类型
   type VideoRef = React.RefObject<HTMLVideoElement>;
@@ -44,7 +52,7 @@ declare global {
     herz: number;
     peaks: SignalDataItem[];
     newFilteredItem: SignalDataItem | null;
-    eyePointDistance: SignalDataItem[];
+    nosePointDistance: SignalDataItem[];
     filteredPeaks: SignalDataItem[];
     removedPeaks: SignalDataItem[];
   }

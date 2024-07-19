@@ -11,6 +11,8 @@ type DataContextType = {
   setUserInfo: React.Dispatch<React.SetStateAction<UserInfo>>;
   chewingFrequency: number;
   setChewingFrequency: React.Dispatch<React.SetStateAction<number>>;
+  isEating: boolean;
+  setIsEating: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -27,7 +29,8 @@ export const DataProvider: React.FC<{
     username: "",
   });
   const [chewingFrequency, setChewingFrequency] = useState<number>(0);
-
+  const [isEating, setIsEating] = useState<boolean>(false); // Declare isGazing state variable and its setter function
+  
   return (
     <DataContext.Provider
       value={{
@@ -39,6 +42,8 @@ export const DataProvider: React.FC<{
         setUserInfo,
         chewingFrequency,
         setChewingFrequency,
+        isEating,
+        setIsEating,
       }}
     >
       {children}

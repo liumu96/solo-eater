@@ -34,20 +34,20 @@ const ChewingTestingNoSSR = dynamic(() => import('@/components/ChewingTesting'),
 });
 
 const PlayerPage: React.FC = () => {
-  const { videoLink, chewingFrequency } = useData();
+//  const { videoLink, chewingFrequency} = useData();
+  const { videoLink, chewingFrequency, isEating} = useData();
   console.log('Chewing Frequency player side:', chewingFrequency);
-  const [isEating, setIsEating] = useState(true);
-  const threshold = 20; // Set your threshold value here
+//  const threshold = 20;
+//  const [isEating, setIsEating] = useState(true);  const threshold = 20; // Set your threshold value here
 
-  useEffect(() => {
-    console.log(chewingFrequency, "chewingFrequency");
-    if (chewingFrequency < threshold) {
-      setIsEating(false);
-    } else {
-      setIsEating(true);
-    }
-  }, [chewingFrequency, ]);
-
+//  useEffect(() => {
+//    console.log(chewingFrequency, "chewingFrequency");
+//    if (chewingFrequency < threshold) {
+//      setIsEating(false);
+//    } else {
+//      setIsEating(true);
+//    }
+//  }, [chewingFrequency, ]);
   // 提取 YouTube 视频 ID https://www.youtube.com/watch?v=lAmXfsZvTFo&ab_channel=GhibliRelaxingSoul
   const getYouTubeVideoId = (url: string) => {
     if (videoLink) {

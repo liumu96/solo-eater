@@ -36,15 +36,13 @@ export const ChewingFrequencyProvider: React.FC<{ children: ReactNode }> = ({
 
   const {
     animate,
-    leftEyePoint,
-    rightEyePoint,
+    noseTip,
     euclideanDistance,
   } = useFaceMesh(videoRef);
 
   const signalProcessingData = useSignalProcessing(
     animate,
-    leftEyePoint,
-    rightEyePoint,
+    noseTip,
     euclideanDistance,
     cutOffFrequency,
     itemsNo
@@ -54,7 +52,7 @@ export const ChewingFrequencyProvider: React.FC<{ children: ReactNode }> = ({
   useEffect(() => {
     if (typeof window !== 'undefined') { // Ensure this runs only on the client
       const calculateChewingFrequency = () => {
-        const frequency = avgFrequency(signalProcessingData.filteredPeaks, 5);
+        const frequency = avgFrequency(signalProcessingData.filteredPeaks, 3);
         setChewingFrequency(frequency);
       };
 

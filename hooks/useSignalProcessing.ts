@@ -67,8 +67,7 @@ function calculateCorrelation(arr1: any[], arr2: any[], windowSize: number) {
 
 export default function useSignalProcessing(
   animate: boolean,
-  leftEyePoint: { x: number; y: number } | null,
-  rightEyePoint: { x: number; y: number } | null,
+  noseTip: { x: number; y: number } | null,
   newItem: SignalDataItem | null,
   cutOffFrequency: number,
   itemsNo: number
@@ -79,11 +78,10 @@ export default function useSignalProcessing(
     herz: 0,
     peaks: [],
     newFilteredItem: null,
-    eyePointDistance: [],
+    nosePointDistance: [],
     filteredPeaks: [],
     removedPeaks: [],
   });
-
   useEffect(() => {
     if (!newItem || newItem === undefined) return;
 
@@ -96,7 +94,7 @@ export default function useSignalProcessing(
 
     let data = dataRef.current.data;
     let filteredData = dataRef.current.filteredData;
-    let eyePointDistance = dataRef.current.eyePointDistance;
+    let nosePointDistance = dataRef.current.nosePointDistance;
 
     if (data.length >= 10) {
       let prev;
@@ -110,7 +108,8 @@ export default function useSignalProcessing(
       updateDataRef("herz", herz);
 
       let newFilteredItem = {
-        value: pointLowPassFilter(prev.value, newItem, 1, herz),
+        value: pointLowPassFilter(prev.value, newItem, 1, herz
+        ),
         time: newItem.time,
       };
       updateDataRef("newFilteredItem", newFilteredItem);
@@ -119,12 +118,12 @@ export default function useSignalProcessing(
       const peaks = peakIndexes.map((i) => filteredData[i]);
       updateDataRef("peaks", peaks);
 
-      const windowSize = 20;
-      const threshold = 0.6; // set a threshold for the correlation coefficient
+      const windowSize = 5;
+      const threshold = 0.8; // set a threshold for the correlation coefficient
 
       const correlationCoefficients = calculateCorrelation(
         filteredData,
-        eyePointDistance,
+        nosePointDistance,
         windowSize
       );
 
@@ -160,20 +159,27 @@ export default function useSignalProcessing(
         newFilteredItem,
       ]);
 
-      if (leftEyePoint && rightEyePoint) {
-        const newEyePointDistance = {
-          value: euclideanDistance(leftEyePoint.x, leftEyePoint.y) + euclideanDistance(rightEyePoint.x, rightEyePoint.y),
+      if (noseTip) {
+        const newNosePointDistance = {
+          value: euclideanDistance(noseTip.x, noseTip.y),
           time: newItem.time,
         };
-        updateDataRef("eyePointDistance", [
-          ...eyePointDistance.slice(-itemsNo),
-          newEyePointDistance,
+        updateDataRef("nosePointDistance", [
+          ...nosePointDistance.slice(-itemsNo),
+          newNosePointDistance,
         ]);
       }
     }
 
+    // Immediate zero detection
+    const newFilteredItem = dataRef.current.newFilteredItem;
+    if (newFilteredItem && newFilteredItem.value < 20) {
+      updateDataRef("filteredPeaks", []);
+      updateDataRef("removedPeaks", []);
+    }
+
     updateDataRef("data", [...data.slice(-itemsNo), newItem]);
-  }, [animate, newItem, leftEyePoint, rightEyePoint, cutOffFrequency, itemsNo]);
+  }, [animate, newItem, noseTip, cutOffFrequency, itemsNo, dataRef]);
 
   return useMemo(() => {
     return {
@@ -182,9 +188,10 @@ export default function useSignalProcessing(
       herz: dataRef.current.herz,
       peaks: dataRef.current.peaks,
       newFilteredItem: dataRef.current.newFilteredItem,
-      eyePointDistance: dataRef.current.eyePointDistance,
+      nosePointDistance: dataRef.current.nosePointDistance,
       filteredPeaks: dataRef.current.filteredPeaks,
       removedPeaks: dataRef.current.removedPeaks,
     };
   }, [animate]);
 }
+
