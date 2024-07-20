@@ -61,7 +61,13 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ videoId }) => {
   const onPlayerStateChange = (event: any) => {
     if (event.data === 1) {
       startReducingPlaybackRate();
+    } else if (event.data === 2) {
+      handlePause();
     }
+  };
+
+  const handlePause = () => {
+    // todo
   };
 
   const onPlaybackRateChange = () => {
@@ -94,27 +100,11 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ videoId }) => {
     .map((item) => `rgba(${item[0]}, ${item[1]}, ${item[2]}, ${opacity})`)
     .join(", ")})`;
 
-  const addCustomButton = (controls: Element) => {
-    const customButton = document.createElement("button");
-    customButton.innerText = "Custom Button";
-    customButton.style.background = "#ff0000";
-    customButton.style.color = "#ffffff";
-    customButton.style.border = "none";
-    customButton.style.padding = "5px 10px";
-    customButton.style.marginLeft = "10px";
-    customButton.style.cursor = "pointer";
-
-    customButton.addEventListener("click", () => {
-      alert("Custom button clicked!");
-    });
-
-    controls.insertBefore(customButton, controls.firstChild);
-  };
-
   return (
     <div
-      className="w-full h-full border-[16px] rounded"
-      style={{ borderImage: `${borderColor} 1`, borderImageSlice: 1 }}
+      className="w-full h-full"
+      // className="w-full h-full border-[16px] rounded"
+      // style={{ borderImage: `${borderColor} 1`, borderImageSlice: 1 }}
     >
       <YouTube
         videoId={videoId}

@@ -45,16 +45,16 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
 
   // Define a default onFrequencyUpdate function if not provided
   const defaultOnFrequencyUpdate = (frequency: number | null) => {
-    console.log("Updated Frequency:", frequency);
+    // console.log("Updated Frequency:", frequency);
   };
 
   useEffect(() => {
     if (typeof window === "undefined") return;
 
     const calculateChewingFrequency = () => {
-      console.log("Filtered Peaks:", signalProcessingData.filteredPeaks);
+      // console.log("Filtered Peaks:", signalProcessingData.filteredPeaks);
       const frequency = avgFrequency(signalProcessingData.filteredPeaks, 5);
-      console.log("Calculated Frequency:", frequency); // Debug log
+      // console.log("Calculated Frequency:", frequency); // Debug log
       setChewingFrequency(frequency);
       (onFrequencyUpdate || defaultOnFrequencyUpdate)(frequency); // Use the provided function or the default one
     };
