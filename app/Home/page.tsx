@@ -62,6 +62,10 @@ const HomePage = () => {
     setUsername(e.target.value);
   };
 
+  const handleSurveyClick = () => {
+    window.open("https://forms.gle/eqXKZAf9qDVdzcgn9", "_blank");
+  };
+
   return (
     <div className="w-full flex flex-col items-center justify-center min-h-screen bg-white">
       <div className="p-8 border shadow-lg rounded-lg w-full max-w-lg bg-gradient-to-r from-pink-50 via-purple-50 to-blue-50 min-w-[800px]">
@@ -116,6 +120,16 @@ const HomePage = () => {
             Get Started
           </Button>
         </Link>
+        <Button
+          onClick={handleSurveyClick}
+          variant="contained"
+          color="secondary"
+          size="large"
+          fullWidth
+          className="mt-4"
+        >
+          Take Survey
+        </Button>
       </div>
     </div>
   );

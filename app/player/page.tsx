@@ -5,7 +5,7 @@ import YouTubePlayer from "@/components/YouTubePlayer";
 import BackButton from "@/components/BackButton";
 import DanmakuComp from "@/components/Danmaku";
 import { useData } from "@/context/DataContext";
-import { VideoProvider } from "@/context/VideoContext";
+import { VideoProvider, useVideo } from "@/context/VideoContext";
 import dynamic from "next/dynamic";
 
 // Dynamically import the ChewingTesting component with SSR disabled
@@ -48,20 +48,21 @@ const PlayerPage: React.FC = () => {
         <BackButton fontSize={48} />
       </div>
 
-      <div className="w-full h-full flex flex-col items-center justify-center z-40">
-        {videoId ? (
-          <div className="w-full h-full flex items-center justify-center">
-            <YouTubePlayer videoId={videoId} />
-            {!isEating && <DanmakuComp />}
-          </div>
-        ) : (
-          <div className="text-white">
-            No video link provided or invalid video ID.
-          </div>
-        )}
-      </div>
       <VideoProvider>
-        <div className="absolute w-full min-h-screen">
+        <div className="w-full h-full flex flex-col items-center justify-center z-40">
+          {videoId ? (
+            <div className="w-full h-full flex items-center justify-center">
+              <YouTubePlayer videoId={videoId} />
+              {!isEating && <DanmakuComp />}
+            </div>
+          ) : (
+            <div className="text-white">
+              No video link provided or invalid video ID.
+            </div>
+          )}
+        </div>
+
+        <div className="absolute w-full h-[500px]">
           <ChewingTestingNoSSR />
         </div>
       </VideoProvider>

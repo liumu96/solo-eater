@@ -16,7 +16,15 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
 }) => {
   const [maximized, setMaximized] = useState(true);
   const canvasRef = useRef<HTMLCanvasElement | null>(null); // our canvas
-  const { videoRef } = useVideo();
+
+  const {
+    videoRef,
+    startRecording,
+    stopRecording,
+    downloadRecording,
+    mediaRecorder,
+  } = useVideo();
+
   const {
     leftEyePoint,
     rightEyePoint,
@@ -63,7 +71,7 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
   }, [animate, onFrequencyUpdate, signalProcessingData.filteredPeaks]); // Added signalProcessingData.filteredPeaks as dependency
 
   useEffect(() => {
-    console.log("Chewing Frequency Updated:", chewingFrequency); // Debug log
+    // console.log("Chewing Frequency Updated:", chewingFrequency); // Debug log
   }, [chewingFrequency]);
 
   useEffect(() => {
@@ -158,6 +166,15 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
     setMaximized(!maximized);
   };
 
+  const [startChewing, setStartChewing] = useState(false);
+
+  useEffect(() => {
+    if (chewingFrequency && !startChewing) {
+      setStartChewing(true);
+      startRecording();
+    }
+  }, [chewingFrequency]);
+
   return (
     <div
       onClick={toggleMaximize}
@@ -174,8 +191,14 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
         ref={canvasRef}
         className="absolute top-0 left-0 w-full h-full object-contain z-20 pointer-events-none"
       />
-      <p className="absolute right-0 text-red">
+      <p className="absolute right-0 text-red z-50">
         Frequency is: {chewingFrequency}
+        <button onClick={stopRecording} className="cursor-pointer">
+          Stop Recording
+        </button>
+        <button onClick={downloadRecording} className="cursor-pointer">
+          Download
+        </button>
       </p>
     </div>
   );
