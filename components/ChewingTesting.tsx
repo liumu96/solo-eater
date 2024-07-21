@@ -191,7 +191,7 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
         ref={canvasRef}
         className="absolute top-0 left-0 w-full h-full object-contain z-20 pointer-events-none"
       />
-      <p className="absolute right-0 text-red z-50">
+      <p className="absolute right-0 text-red">
         Frequency is: {chewingFrequency}
         <button onClick={stopRecording} className="cursor-pointer">
           Stop Recording
