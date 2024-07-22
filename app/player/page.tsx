@@ -62,7 +62,7 @@ const PlayerPage: React.FC = () => {
           )}
         </div>
 
-        <div className="absolute w-full h-[500px]">
+        <div className="absolute w-full h-[500px] hidden">
           <ChewingTestingNoSSR />
         </div>
       </VideoProvider>
