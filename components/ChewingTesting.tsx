@@ -33,7 +33,7 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
   const [itemsNo, setItemsNo] = useState(240);
   const [gazingStartTime, setGazingStartTime] = useState<number | null>(null);
   const [reminder, setReminder] = useState<string | null>(null);
-
+  const windowSize = 2.5;
   const signalProcessingData = useSignalProcessing(
     animate,
     noseTip,
@@ -50,16 +50,30 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
   useEffect(() => {
     if (typeof window === "undefined") return;
 
+    const defaultOnFrequencyUpdate = (frequency: number | null) => {
+      console.log("Frequency:", frequency);
+    };
+
     const calculateChewingFrequency = () => {
       console.log("Filtered Peaks:", signalProcessingData.filteredPeaks);
-      const frequency = avgFrequency(signalProcessingData.filteredPeaks, 3);
+      const timeNow = Date.now();
+      const frequency = avgFrequency(signalProcessingData.filteredPeaks, timeNow, windowSize);
       console.log("Calculated Frequency:", frequency); // Debug log
       setChewingFrequency(frequency);
       (onFrequencyUpdate || defaultOnFrequencyUpdate)(frequency); // Use the provided function or the default one
     };
 
+    // Calculate initially
     calculateChewingFrequency();
-  }, [animate, onFrequencyUpdate, signalProcessingData.filteredPeaks]); // Added signalProcessingData.filteredPeaks as dependency
+
+    // Set up interval to calculate every second
+    const interval = setInterval(() => {
+      calculateChewingFrequency();
+    }, 1000); // Every second
+
+    // Clean up the interval when the component unmounts
+    return () => clearInterval(interval);
+  }, [animate]);
 
   useEffect(() => {
     console.log("Chewing Frequency Updated:", chewingFrequency); // Debug log

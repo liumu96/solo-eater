@@ -58,18 +58,17 @@ export const useFaceMesh = (
 
           // Determine if the person is looking forward and head is level
           const isLookingForwardAndLevel = () => {
-            console.log("Yaw:", meshDataRef.current.yaw, "Turn:", meshDataRef.current.turn);
             if (!meshDataRef.current.yaw || !meshDataRef.current.turn) return false;
 
             const { yaw, turn } = meshDataRef.current;
 
             // Define thresholds
-            const yawThreshold = 120;
-            const turnThreshold = 90;
+            const yawThreshold = 100;
+            const turnThreshold = 85;
 
             // Determine if the person is looking forward and their head is level
-            const isLookingForward = Math.abs(yaw) >= yawThreshold;
-            const isHeadLevel = Math.abs(turn) >= turnThreshold;
+            const isLookingForward = Math.abs(yaw) >= yawThreshold && Math.abs(yaw) <= 170;
+            const isHeadLevel = Math.abs(turn) >= turnThreshold && Math.abs(turn) <= 120;
 
             return isLookingForward && isHeadLevel;
           };

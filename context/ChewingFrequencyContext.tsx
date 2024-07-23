@@ -52,7 +52,7 @@ export const ChewingFrequencyProvider: React.FC<{ children: ReactNode }> = ({
   useEffect(() => {
     if (typeof window !== 'undefined') { // Ensure this runs only on the client
       const calculateChewingFrequency = () => {
-        const frequency = avgFrequency(signalProcessingData.filteredPeaks, 3);
+        const frequency = avgFrequency(signalProcessingData.filteredPeaks, 2.5);
         setChewingFrequency(frequency);
       };
 

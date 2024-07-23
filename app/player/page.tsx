@@ -7,7 +7,6 @@ import BackButton from "@/components/BackButton";
 import DanmakuComp from "@/components/Danmaku";
 import { useData } from "@/context/DataContext";
 import { VideoProvider } from "@/context/VideoContext";
-//import ChewingTesting from "@/components/ChewingTesting";
 
 const avatarList = [
   {
@@ -34,20 +33,24 @@ const ChewingTestingNoSSR = dynamic(() => import('@/components/ChewingTesting'),
 });
 
 const PlayerPage: React.FC = () => {
-//  const { videoLink, chewingFrequency} = useData();
-  const { videoLink, chewingFrequency, isEating} = useData();
-  console.log('Chewing Frequency player side:', chewingFrequency);
-//  const threshold = 20;
-//  const [isEating, setIsEating] = useState(true);  const threshold = 20; // Set your threshold value here
+  const { videoLink, chewingFrequency, isGazing} = useData();
+  
+  const threshold = 24; // Set your threshold value here
+  const [isEating, setIsEating] = useState(true);
 
-//  useEffect(() => {
-//    console.log(chewingFrequency, "chewingFrequency");
-//    if (chewingFrequency < threshold) {
-//      setIsEating(false);
-//    } else {
-//      setIsEating(true);
-//    }
-//  }, [chewingFrequency, ]);
+  // Check if the user is gazing at the screen and whether it changes over time
+  useEffect(() => {
+    console.log('isGazing value:', isGazing);
+  }, [isGazing]);
+
+  useEffect(() => {
+    if (chewingFrequency < threshold) {
+      setIsEating(false);
+    } else {
+      setIsEating(true);
+    }
+  }, [chewingFrequency]);
+
   // 提取 YouTube 视频 ID https://www.youtube.com/watch?v=lAmXfsZvTFo&ab_channel=GhibliRelaxingSoul
   const getYouTubeVideoId = (url: string) => {
     if (videoLink) {
@@ -94,7 +97,7 @@ const PlayerPage: React.FC = () => {
         {videoId ? (
           <div className="w-full h-full flex items-center justify-center">
             <YouTubePlayer videoId={videoId} />
-            {!isEating && <DanmakuComp />}
+            {!isEating && isGazing && <DanmakuComp />}
           </div>
         ) : (
           <div className="text-white">
