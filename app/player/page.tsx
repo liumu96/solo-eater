@@ -35,7 +35,7 @@ const ChewingTestingNoSSR = dynamic(() => import('@/components/ChewingTesting'),
 const PlayerPage: React.FC = () => {
   const { videoLink, chewingFrequency, isGazing} = useData();
   
-  const threshold = 24; // Set your threshold value here
+  const threshold = 15; // Set your threshold value here
   const [isEating, setIsEating] = useState(true);
 
   // Check if the user is gazing at the screen and whether it changes over time

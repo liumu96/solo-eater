@@ -33,7 +33,7 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
   const [itemsNo, setItemsNo] = useState(240);
   const [gazingStartTime, setGazingStartTime] = useState<number | null>(null);
   const [reminder, setReminder] = useState<string | null>(null);
-  const windowSize = 2.5;
+  const windowSize = 3.5;
   const signalProcessingData = useSignalProcessing(
     animate,
     noseTip,
@@ -69,7 +69,7 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
     // Set up interval to calculate every second
     const interval = setInterval(() => {
       calculateChewingFrequency();
-    }, 1000); // Every second
+    }, 800); // Every second
 
     // Clean up the interval when the component unmounts
     return () => clearInterval(interval);
@@ -193,9 +193,6 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
       />
       <p className="absolute right-0 text-red">
         Frequency is: {chewingFrequency !== null ? chewingFrequency : "N/A"}
-      </p>
-      <p className="absolute left-0 text-red">
-        Eating is: {isEating}
       </p>
     </div>
   );
