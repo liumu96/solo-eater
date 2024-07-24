@@ -4,22 +4,21 @@ import { useData } from "@/context/DataContext";
 import React, { useEffect, useRef } from "react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
-import Link from "next/link";
 import { Button } from "@mui/material";
 
 const UserDataPage = () => {
-  const { userInfo } = useData();
+  const { userInfo, videoLink, videoPlayInfo } = useData();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const testUserInfo = {
-    participantID: "user-01",
-    videoLink: "youtubevideo",
-    mealDuration: 30,
+    participantID: userInfo.username,
+    videoLink: videoLink,
+    mealDuration: userInfo.eatingTime,
     videoWatchingDuration: {
-      open: 5,
-      close: 15,
-      stopTimes: [2, 5, 7],
-      resumeTimes: [3, 6, 8],
+      open: videoPlayInfo?.startTime || new Date(),
+      close: videoPlayInfo?.stopTime || new Date(),
+      stopTimes: videoPlayInfo?.pauseTimes || [],
+      resumeTimes: videoPlayInfo?.resumeTimes || [],
     },
   };
 
@@ -39,26 +38,30 @@ const UserDataPage = () => {
         );
         ctx.fillText(`Video Watching Duration:`, 10, 120);
         ctx.fillText(
-          `- Open: ${testUserInfo.videoWatchingDuration.open} mins`,
+          `- Open: ${new Date(
+            testUserInfo.videoWatchingDuration.open
+          ).toLocaleTimeString()}`,
           20,
           150
         );
         ctx.fillText(
-          `- Close: ${testUserInfo.videoWatchingDuration.close} mins`,
+          `- Close: ${new Date(
+            testUserInfo.videoWatchingDuration.close
+          ).toLocaleTimeString()}`,
           20,
           180
         );
         ctx.fillText(
-          `- Stop Times: ${testUserInfo.videoWatchingDuration.stopTimes.join(
-            ", "
-          )}`,
+          `- Stop Times: ${testUserInfo.videoWatchingDuration.stopTimes
+            .map((time) => new Date(time).toLocaleTimeString())
+            .join(", ")}`,
           20,
           210
         );
         ctx.fillText(
-          `- Resume Times: ${testUserInfo.videoWatchingDuration.resumeTimes.join(
-            ", "
-          )}`,
+          `- Resume Times: ${testUserInfo.videoWatchingDuration.resumeTimes
+            .map((time) => new Date(time).toLocaleTimeString())
+            .join(", ")}`,
           20,
           240
         );

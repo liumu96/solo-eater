@@ -37,18 +37,7 @@ const avatarList = [
 ];
 
 const PlayerPage: React.FC = () => {
-  const { videoLink, chewingFrequency } = useData();
-  const [isEating, setIsEating] = useState(true);
-  const threshold = 20; // Set your threshold value here
-
-  useEffect(() => {
-    console.log(chewingFrequency, "chewingFrequency");
-    if (chewingFrequency < threshold) {
-      setIsEating(false);
-    } else {
-      setIsEating(true);
-    }
-  }, [chewingFrequency]);
+  const { videoLink, isEating } = useData();
 
   // 提取 YouTube 视频 ID https://www.youtube.com/watch?v=lAmXfsZvTFo&ab_channel=GhibliRelaxingSoul
   const getYouTubeVideoId = (url: string) => {

@@ -1,35 +1,22 @@
 "use client";
-import { Button, TextField } from "@mui/material";
-import Link from "next/link";
+import { Button } from "@mui/material";
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { sendGAEvent } from "@next/third-parties/google";
+import { useRouter } from "next/navigation";
 import { useData } from "@/context/DataContext";
 import { isValidYouTubeUrl } from "@/utils/validation";
 
 const HomePage = () => {
+  const router = useRouter();
   const webTitle = "Solo Eater";
   const [title, setTitle] = useState("");
-  const [username, setUsername] = useState("");
   const { userInfo, setUserInfo, setVideoLink, videoLink } = useData();
-  const [eatingTime, setEatingTime] = useState(userInfo.eatingTime || ""); // minute
-  const [error, setError] = useState("");
-
-  const handleContinue = () => {
-    if (!isValidYouTubeUrl(videoLink)) {
-      setError("Please enter a valid YouTube video link.");
-    } else {
-      localStorage.setItem("videoLink", videoLink);
-    }
-  };
-
-  const updateUserInfo = (e: { target: { value: string | number } }) => {
-    console.log(e.target.value);
-    setEatingTime(+e.target.value);
-    setUserInfo({
-      ...userInfo,
-      eatingTime: +e.target.value,
-    });
-  };
+  const [username, setUsername] = useState(userInfo.username || "");
+  const [eatingTime, setEatingTime] = useState(userInfo.eatingTime || 0); // minute
+  const [usernameError, setUsernameError] = useState("");
+  const [videoLinkError, setVideoLinkError] = useState("");
+  const [eatingTimeError, setEatingTimeError] = useState("");
+  const [surveyTaken, setSurveyTaken] = useState(false);
+  const [surveyError, setSurveyError] = useState("");
 
   useEffect(() => {
     const timerId = setInterval(() => {
@@ -46,90 +33,148 @@ const HomePage = () => {
     return () => clearInterval(timerId);
   }, []);
 
-  useEffect(() => {
-    // 检查本地存储中是否有用户名
-    const savedUsername = localStorage.getItem("username");
-    if (savedUsername) {
-      setUsername(savedUsername);
-    }
-  }, []);
+  const handleStart = () => {
+    let hasError = false;
 
-  const handleLogin = () => {
-    localStorage.setItem("username", username);
+    if (!isValidYouTubeUrl(videoLink)) {
+      setVideoLinkError("Please enter a valid YouTube video link.");
+      hasError = true;
+    } else {
+      setVideoLinkError("");
+    }
+
+    if (!username) {
+      setUsernameError("Please enter your username.");
+      hasError = true;
+    } else {
+      setUsernameError("");
+    }
+
+    if (!eatingTime) {
+      setEatingTimeError("Please enter your eating time.");
+      hasError = true;
+    } else {
+      setEatingTimeError("");
+    }
+
+    if (!surveyTaken) {
+      setSurveyError("Please take the survey.");
+      hasError = true;
+    } else {
+      setSurveyError("");
+    }
+
+    if (!hasError) {
+      localStorage.setItem("username", username);
+      localStorage.setItem("eatingTime", eatingTime.toString());
+      localStorage.setItem("videoLink", videoLink);
+      setUserInfo({
+        eatingTime,
+        username,
+      });
+      router.push("/player");
+    }
   };
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const updateUserName = (e: ChangeEvent<HTMLInputElement>) => {
     setUsername(e.target.value);
   };
 
+  const updateEatingTime = (e: ChangeEvent<HTMLInputElement>) => {
+    setEatingTime(+e.target.value);
+  };
+
+  const updateVideoLink = (e: ChangeEvent<HTMLInputElement>) => {
+    setVideoLink(e.target.value);
+  };
+
   const handleSurveyClick = () => {
+    setSurveyTaken(true);
+    setSurveyError("");
     window.open("https://forms.gle/eqXKZAf9qDVdzcgn9", "_blank");
   };
 
   return (
     <div className="w-full flex flex-col items-center justify-center min-h-screen bg-white">
-      <div className="p-8 border shadow-lg rounded-lg w-full max-w-lg bg-gradient-to-r from-pink-50 via-purple-50 to-blue-50 min-w-[800px]">
+      <div className="p-8 border shadow-lg rounded-lg w-full max-w-lg bg-gradient-to-r from-pink-50 via-purple-50 to-blue-50 min-w-[600px]">
         <h1 className="text-4xl font-bold text-gray-900 mb-8">
           <span role="img" aria-label="wave" className="mr-2">
             👋
           </span>{" "}
           Welcome to {title}
         </h1>
-        {/* 输入你的ID */}
-        <div className="mb-6">
-          <label className="block text-lg font-semibold mb-2">
-            Enter Your Username
-          </label>
-          <input
-            type="text"
-            placeholder="Enter your username"
-            value={username}
-            onChange={handleChange}
-            className="p-2 border border-gray-300 rounded mb-4 w-full"
-            style={{ backgroundColor: "#ffffff", borderRadius: "8px" }}
-          />
-          <label className="block text-lg font-semibold mb-2">Video Link</label>
-          <input
-            type="text"
-            placeholder="Enter YouTube video link"
-            className="p-2 border border-gray-300 rounded mb-4 w-full"
-            value={videoLink}
-            onChange={(e) => setVideoLink(e.target.value)}
-          />
-          {error && <p className="text-red-500 mb-2">{error}</p>}
 
-          <label className="block text-lg font-semibold mb-2">
-            Eating Time / Minutes
-          </label>
-          <input
-            type="text"
-            placeholder="Input your eating time (minutes)"
-            className="p-2 border border-gray-300 rounded mb-4 w-full"
-            value={eatingTime}
-            onChange={updateUserInfo}
-          />
-        </div>
-        <Link
-          href="/player"
-          onClick={() => {
-            handleLogin();
-          }}
-          passHref
-        >
-          <Button variant="contained" color="primary" size="large" fullWidth>
-            Get Started
+        <div className="mb-8 flex flex-col items-center">
+          <h2 className="text-2xl font-bold mb-4 text-center">Step 1</h2>
+          <Button
+            onClick={handleSurveyClick}
+            variant="contained"
+            color="secondary"
+            size="large"
+            fullWidth
+            className="mt-4 w-auto"
+          >
+            Take Survey
           </Button>
-        </Link>
-        <Button
-          onClick={handleSurveyClick}
-          variant="contained"
-          color="secondary"
-          size="large"
-          fullWidth
-          className="mt-4"
-        >
-          Take Survey
-        </Button>
+          {surveyError && <p className="text-red-500 mt-2">{surveyError}</p>}
+        </div>
+
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold mb-4 text-center">Step 2</h2>
+          <div className="mb-6">
+            <label className="block text-lg font-semibold mb-2">
+              Enter Your Username
+            </label>
+            <input
+              type="text"
+              placeholder="Enter your username"
+              value={username}
+              onChange={updateUserName}
+              className="p-2 border border-gray-300 rounded mb-1 w-full bg-white"
+            />
+            {usernameError && (
+              <p className="text-red-500 mt-1">{usernameError}</p>
+            )}
+
+            <label className="block text-lg font-semibold mb-2">
+              Video Link
+            </label>
+            <input
+              type="text"
+              placeholder="Enter YouTube video link"
+              className="p-2 border border-gray-300 rounded mb-1 w-full"
+              value={videoLink}
+              onChange={updateVideoLink}
+            />
+            {videoLinkError && (
+              <p className="text-red-500 mt-1">{videoLinkError}</p>
+            )}
+
+            <label className="block text-lg font-semibold mb-2">
+              Eating Time / Minutes
+            </label>
+            <input
+              type="text"
+              placeholder="Input your eating time (minutes)"
+              className="p-2 border border-gray-300 rounded mb-1 w-full"
+              value={eatingTime}
+              onChange={updateEatingTime}
+            />
+            {eatingTimeError && (
+              <p className="text-red-500 mt-1">{eatingTimeError}</p>
+            )}
+          </div>
+          <div className="flex justify-center">
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              onClick={handleStart}
+            >
+              Get Started
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -42,15 +42,15 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
             Cancel
           </Button>
 
-          <Link href="/userdata" passHref>
-            <Button
-              onClick={onConfirm}
-              color="primary"
-              className="text-base font-semibold text-white bg-blue-500 hover:bg-blue-600"
-            >
-              Confirm
-            </Button>
-          </Link>
+          {/* <Link href="/userdata" passHref> */}
+          <Button
+            onClick={onConfirm}
+            color="primary"
+            className="text-base font-semibold text-white bg-blue-500 hover:bg-blue-600"
+          >
+            Confirm
+          </Button>
+          {/* </Link> */}
         </DialogActions>
       </div>
     </Dialog>

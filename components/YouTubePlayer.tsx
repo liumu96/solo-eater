@@ -1,10 +1,10 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import YouTube from "react-youtube";
+import { useRouter } from "next/navigation";
 import { useData } from "@/context/DataContext";
 import { useVideo } from "@/context/VideoContext";
 import ConfirmationDialog from "./ConfirmationDialog";
-import ChewingTesting from "./ChewingTesting";
 
 interface BorderColor {
   color: string;
@@ -16,15 +16,26 @@ interface YouTubePlayerProps {
   borderColors?: BorderColor[];
 }
 
-const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ videoId }) => {
-  const playerRef = useRef<any>(null);
+interface VideoPlayInfo {
+  startTime: Date;
+  stopTime: Date;
+  pauseTimes: Array<Date>;
+  resumeTimes: Array<Date>;
+}
 
+const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ videoId }) => {
+  const router = useRouter();
+  const playerRef = useRef<any>(null);
   const targetPlaybackRateRef = useRef<number>(0.83);
   const [autoRateChange, setAutoRateChange] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [startTime, setStartTime] = useState<number | null>(null);
+  const [pauseTimes, setPauseTimes] = useState<number[]>([]);
+  const [resumeTimes, setResumeTimes] = useState<number[]>([]);
+  const { setVideoPlayInfo } = useData();
 
   // Video Recording
   const { startRecording, stopRecording } = useVideo();
-  const [dialogOpen, setDialogOpen] = useState(false);
 
   const opts = {
     height: "100%",
@@ -41,20 +52,24 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ videoId }) => {
   const onPlayerReady = (event: any) => {
     playerRef.current = event.target;
     startReducingPlaybackRate();
+    setStartTime(Date.now());
   };
 
   const onPlayerStateChange = (event: any) => {
     if (event.data === 1) {
+      // 视频开始播放
       startReducingPlaybackRate();
-
       startRecording();
+      setResumeTimes((prev) => [...prev, Date.now()]);
     } else if (event.data === 2) {
+      // 视频暂停
       handlePause();
     }
   };
 
   const handlePause = () => {
     setDialogOpen(true);
+    setPauseTimes((prev) => [...prev, Date.now()]);
   };
 
   const handleDialogClose = () => {
@@ -62,8 +77,19 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ videoId }) => {
   };
 
   const handleDialogConfirm = () => {
-    stopRecording();
-    setDialogOpen(false);
+    const errorInfo = stopRecording();
+    if (errorInfo) {
+      alert(errorInfo);
+    } else {
+      setDialogOpen(false);
+      setVideoPlayInfo({
+        startTime: new Date(startTime!),
+        stopTime: new Date(Date.now()),
+        pauseTimes: pauseTimes.map((time) => new Date(time)),
+        resumeTimes: resumeTimes.map((time) => new Date(time)),
+      });
+      router.push("/userdata");
+    }
   };
 
   const onPlaybackRateChange = () => {

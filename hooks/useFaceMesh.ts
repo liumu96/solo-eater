@@ -1,8 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getMesh } from "@/utils/testing";
 import * as facemesh from "@tensorflow-models/face-landmarks-detection";
-import { MeshResult, Prediction, Keypoint } from "@/types/types"; 
-import {calculateEAR, euclideanDistance, isLookingAtScreen} from "@/utils/eyeUtils"
+import { MeshResult, Prediction, Keypoint } from "@/types/types";
+import {
+  calculateEAR,
+  euclideanDistance,
+  isLookingAtScreen,
+} from "@/utils/eyeUtils";
 
 export const useFaceMesh = (
   videoRef: React.RefObject<HTMLVideoElement> | null
@@ -34,9 +38,17 @@ export const useFaceMesh = (
         const face = await net.estimateFaces(video);
 
         if (face.length > 0) {
-          const { euclideanDistance, leftEyePoint, rightEyePoint, noseTip, leftNose, rightNose, namedKeypoints, yaw, turn } = getMesh(
-            face as Prediction[]
-          );
+          const {
+            euclideanDistance,
+            leftEyePoint,
+            rightEyePoint,
+            noseTip,
+            leftNose,
+            rightNose,
+            namedKeypoints,
+            yaw,
+            turn,
+          } = getMesh(face as Prediction[]);
 
           meshDataRef.current = {
             euclideanDistance,
@@ -51,14 +63,22 @@ export const useFaceMesh = (
           };
 
           // Check if the user is looking at the screen
-          if (namedKeypoints && namedKeypoints["leftEye"] && namedKeypoints["rightEye"]) {
-            const isLooking = isLookingAtScreen(namedKeypoints["leftEye"], namedKeypoints["rightEye"]);
+          if (
+            namedKeypoints &&
+            namedKeypoints["leftEye"] &&
+            namedKeypoints["rightEye"]
+          ) {
+            const isLooking = isLookingAtScreen(
+              namedKeypoints["leftEye"],
+              namedKeypoints["rightEye"]
+            );
             setLookingAtScreen(isLooking);
           }
 
           // Determine if the person is looking forward and head is level
           const isLookingForwardAndLevel = () => {
-            if (!meshDataRef.current.yaw || !meshDataRef.current.turn) return false;
+            if (!meshDataRef.current.yaw || !meshDataRef.current.turn)
+              return false;
 
             const { yaw, turn } = meshDataRef.current;
 
@@ -67,8 +87,10 @@ export const useFaceMesh = (
             const turnThreshold = 85;
 
             // Determine if the person is looking forward and their head is level
-            const isLookingForward = Math.abs(yaw) >= yawThreshold && Math.abs(yaw) <= 170;
-            const isHeadLevel = Math.abs(turn) >= turnThreshold && Math.abs(turn) <= 120;
+            const isLookingForward =
+              Math.abs(yaw) >= yawThreshold && Math.abs(yaw) <= 170;
+            const isHeadLevel =
+              Math.abs(turn) >= turnThreshold && Math.abs(turn) <= 120;
 
             return isLookingForward && isHeadLevel;
           };

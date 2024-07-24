@@ -17,7 +17,7 @@ declare global {
     y: number;
     z?: number;
     name?: string;
-  }
+  };
 
   // 定义一个 Prediction 类型，表示一个预测，包括关键点
   type Prediction = {
@@ -35,7 +35,7 @@ declare global {
     leftNose: Keypoint | null;
     rightNose: Keypoint | null;
     namedKeypoints: { [key: string]: Keypoint[] } | null;
-  }
+  };
 
   // 定义视频引用类型
   type VideoRef = React.RefObject<HTMLVideoElement>;
@@ -67,6 +67,13 @@ declare global {
     username: string;
     eatingTime?: number;
     preferences?: Array<string>;
+  }
+
+  interface VideoPlayInfo {
+    startTime: Date;
+    stopTime: Date;
+    pauseTimes: Array<Date>;
+    resumeTimes: Array<Date>;
   }
 
   interface Window {

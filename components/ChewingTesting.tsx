@@ -26,17 +26,18 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
   } = useVideo();
 
   const {
-      leftEyePoint,
-      rightEyePoint,
-      noseTip,
-      namedKeypoints,
-      animate,
-      euclideanDistance,
-      isGazing,
-    } = useFaceMesh(videoRef);
+    leftEyePoint,
+    rightEyePoint,
+    noseTip,
+    namedKeypoints,
+    animate,
+    euclideanDistance,
+    isGazing,
+  } = useFaceMesh(videoRef);
 
   // const [chewingFrequency, setChewingFrequency] = useState<number | null>(null);
-  const { chewingFrequency, setChewingFrequency } = useData();
+  const { chewingFrequency, setChewingFrequency, isEating, setIsEating } =
+    useData();
   const [cutOffFrequency, setCutOffFrequency] = useState(0.12);
   const [itemsNo, setItemsNo] = useState(240);
   const [gazingStartTime, setGazingStartTime] = useState<number | null>(null);
@@ -65,7 +66,11 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
     const calculateChewingFrequency = () => {
       console.log("Filtered Peaks:", signalProcessingData.filteredPeaks);
       const timeNow = Date.now();
-      const frequency = avgFrequency(signalProcessingData.filteredPeaks, timeNow, windowSize);
+      const frequency = avgFrequency(
+        signalProcessingData.filteredPeaks,
+        timeNow,
+        windowSize
+      );
       console.log("Calculated Frequency:", frequency); // Debug log
       setChewingFrequency(frequency);
       (onFrequencyUpdate || defaultOnFrequencyUpdate)(frequency); // Use the provided function or the default one
@@ -86,8 +91,8 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
   useEffect(() => {
     // console.log("Chewing Frequency Updated:", chewingFrequency); // Debug log
   }, [chewingFrequency]);
-  
-  const [isEating, setIsEating] = useState(true);
+
+  // const [isEating, setIsEating] = useState(true);
 
   useEffect(() => {
     if (isGazing) {
@@ -109,6 +114,10 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
       }
     } else {
       setGazingStartTime(null);
+      setIsEating(false);
+      setReminder(
+        "Please don't forget to chew your food while watching the video."
+      );
     }
   }, [chewingFrequency]);
 

@@ -18,7 +18,7 @@ interface VideoContextProps {
   recordedChunks: Blob[];
   requestCameraPermission: () => Promise<void>;
   startRecording: () => void;
-  stopRecording: () => void;
+  stopRecording: () => string;
   downloadRecording: () => void;
 }
 
@@ -93,6 +93,9 @@ export const VideoProvider: React.FC<VideoProviderProps> = ({ children }) => {
     if (mediaRecorder && isRecording) {
       mediaRecorder.stop();
       setIsRecording(false);
+      return "";
+    } else {
+      return "Video download failed!";
     }
   };
 
