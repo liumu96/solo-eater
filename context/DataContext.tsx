@@ -13,6 +13,8 @@ type DataContextType = {
   setChewingFrequency: React.Dispatch<React.SetStateAction<number>>;
   isGazing: boolean; // Add the 'isGazing' property
   setIsGazing: React.Dispatch<React.SetStateAction<boolean>>; // Add the 'setIsGazing' property
+  UtensilDetected: boolean; // New state for food detection
+  setUtensilDetected: React.Dispatch<React.SetStateAction<boolean>>; // Setter for food detection state
 };
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -30,6 +32,7 @@ export const DataProvider: React.FC<{
   });
   const [chewingFrequency, setChewingFrequency] = useState<number>(0);
   const [isGazing, setIsGazing] = useState<boolean>(true); // Declare isGazing state variable and its setter function
+  const [UtensilDetected, setUtensilDetected] = useState<boolean>(false); // Initialize the food detection state
   
   return (
     <DataContext.Provider
@@ -44,6 +47,8 @@ export const DataProvider: React.FC<{
         setChewingFrequency,
         isGazing,
         setIsGazing,
+        UtensilDetected,
+        setUtensilDetected,
       }}
     >
       {children}

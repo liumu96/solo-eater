@@ -7,6 +7,7 @@ import BackButton from "@/components/BackButton";
 import DanmakuComp from "@/components/Danmaku";
 import { useData } from "@/context/DataContext";
 import { VideoProvider } from "@/context/VideoContext";
+import UtensilDetection from "@/components/UtensilDetection";
 
 const avatarList = [
   {
@@ -33,11 +34,11 @@ const ChewingTestingNoSSR = dynamic(() => import('@/components/ChewingTesting'),
 });
 
 const PlayerPage: React.FC = () => {
-  const { videoLink, chewingFrequency, isGazing} = useData();
+  const { videoLink, chewingFrequency, isGazing, UtensilDetected} = useData();
   
   const threshold = 15; // Set your threshold value here
   const [isEating, setIsEating] = useState(true);
-
+  console.log('value:', UtensilDetected);
   // Check if the user is gazing at the screen and whether it changes over time
   useEffect(() => {
     console.log('isGazing value:', isGazing);
@@ -50,6 +51,8 @@ const PlayerPage: React.FC = () => {
       setIsEating(true);
     }
   }, [chewingFrequency]);
+
+  console.log('isEating value:', isEating);
 
   // 提取 YouTube 视频 ID https://www.youtube.com/watch?v=lAmXfsZvTFo&ab_channel=GhibliRelaxingSoul
   const getYouTubeVideoId = (url: string) => {
@@ -82,7 +85,7 @@ const PlayerPage: React.FC = () => {
         <BackButton fontSize={48} />
       </div>
       {/* 展示用户选择的avatar 在左下角 默认随机展示 */}
-      {!isEating && (
+      {(!isEating || UtensilDetected) && (
         <div className="absolute bottom-[50px] left-4">
           <img
             src={selectedAvatar}
