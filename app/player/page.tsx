@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import dynamic from 'next/dynamic';
 import YouTubePlayer from "@/components/YouTubePlayer";
 import BackButton from "@/components/BackButton";
 import DanmakuComp from "@/components/Danmaku";
@@ -10,19 +9,22 @@ import { VideoProvider, useVideo } from "@/context/VideoContext";
 import dynamic from "next/dynamic";
 
 // Dynamically import the ChewingTesting component with SSR disabled
-const ChewingTestingNoSSR = dynamic(() => import('@/components/ChewingTesting'), {
-  ssr: false, // This disables server-side rendering for the component
-});
+const ChewingTestingNoSSR = dynamic(
+  () => import("@/components/ChewingTesting"),
+  {
+    ssr: false, // This disables server-side rendering for the component
+  }
+);
 
 const PlayerPage: React.FC = () => {
-  const { videoLink, chewingFrequency, isGazing} = useData();
-  
+  const { videoLink, chewingFrequency, isGazing } = useData();
+
   const threshold = 15; // Set your threshold value here
   const [isEating, setIsEating] = useState(true);
 
   // Check if the user is gazing at the screen and whether it changes over time
   useEffect(() => {
-    console.log('isGazing value:', isGazing);
+    console.log("isGazing value:", isGazing);
   }, [isGazing]);
 
   // TODO: isEating
