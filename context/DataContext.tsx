@@ -25,7 +25,6 @@ export const DataProvider: React.FC<{
     typeof window !== "undefined" ? localStorage.getItem("videoLink") || "" : ""
   );
   const [userInfo, setUserInfo] = useState<UserInfo>({
-    id: null,
     username: "",
   });
   const [chewingFrequency, setChewingFrequency] = useState<number>(0);

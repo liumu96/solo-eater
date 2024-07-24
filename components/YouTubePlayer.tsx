@@ -2,6 +2,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import YouTube from "react-youtube";
 import { useData } from "@/context/DataContext";
+import { useVideo } from "@/context/VideoContext";
+import ConfirmationDialog from "./ConfirmationDialog";
+import ChewingTesting from "./ChewingTesting";
 
 interface BorderColor {
   color: string;
@@ -15,11 +18,13 @@ interface YouTubePlayerProps {
 
 const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ videoId }) => {
   const playerRef = useRef<any>(null);
-  const { dominantColors, userInfo } = useData();
 
   const targetPlaybackRateRef = useRef<number>(0.83);
   const [autoRateChange, setAutoRateChange] = useState(false);
-  const [opacity, setOpacity] = useState(1);
+
+  // Video Recording
+  const { startRecording, stopRecording } = useVideo();
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const opts = {
     height: "100%",
@@ -33,26 +38,6 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ videoId }) => {
     },
   };
 
-  useEffect(() => {
-    const totalTime = (userInfo.eatingTime || 0) * 60 * 1000; // 20分钟
-    const intervalTime = 1000; // 每秒更新一次
-    const steps = totalTime / intervalTime;
-    const opacityStep = 1 / steps;
-
-    const interval = setInterval(() => {
-      setOpacity((prevOpacity) => {
-        if (prevOpacity > 0) {
-          return prevOpacity - opacityStep;
-        } else {
-          clearInterval(interval);
-          return 0;
-        }
-      });
-    }, intervalTime);
-
-    return () => clearInterval(interval);
-  }, []);
-
   const onPlayerReady = (event: any) => {
     playerRef.current = event.target;
     startReducingPlaybackRate();
@@ -61,7 +46,24 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ videoId }) => {
   const onPlayerStateChange = (event: any) => {
     if (event.data === 1) {
       startReducingPlaybackRate();
+
+      startRecording();
+    } else if (event.data === 2) {
+      handlePause();
     }
+  };
+
+  const handlePause = () => {
+    setDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
+
+  const handleDialogConfirm = () => {
+    stopRecording();
+    setDialogOpen(false);
   };
 
   const onPlaybackRateChange = () => {
@@ -90,32 +92,8 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ videoId }) => {
     }, 1000);
   };
 
-  const borderColor = `linear-gradient(45deg, ${dominantColors
-    .map((item) => `rgba(${item[0]}, ${item[1]}, ${item[2]}, ${opacity})`)
-    .join(", ")})`;
-
-  const addCustomButton = (controls: Element) => {
-    const customButton = document.createElement("button");
-    customButton.innerText = "Custom Button";
-    customButton.style.background = "#ff0000";
-    customButton.style.color = "#ffffff";
-    customButton.style.border = "none";
-    customButton.style.padding = "5px 10px";
-    customButton.style.marginLeft = "10px";
-    customButton.style.cursor = "pointer";
-
-    customButton.addEventListener("click", () => {
-      alert("Custom button clicked!");
-    });
-
-    controls.insertBefore(customButton, controls.firstChild);
-  };
-
   return (
-    <div
-      className="w-full h-full border-[16px] rounded"
-      style={{ borderImage: `${borderColor} 1`, borderImageSlice: 1 }}
-    >
+    <div className="w-full h-full">
       <YouTube
         videoId={videoId}
         opts={opts}
@@ -123,6 +101,11 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ videoId }) => {
         onReady={onPlayerReady}
         onStateChange={onPlayerStateChange}
         onPlaybackRateChange={onPlaybackRateChange}
+      />
+      <ConfirmationDialog
+        open={dialogOpen}
+        onClose={handleDialogClose}
+        onConfirm={handleDialogConfirm}
       />
     </div>
   );
