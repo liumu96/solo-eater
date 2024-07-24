@@ -1,19 +1,26 @@
-export function avgFrequency(peaks, m) {
-    if (!peaks || peaks.length <= 1) {
-        return 0;
-    }
+export function avgFrequency(peaks, currentTime, windowSize) {
+  if (!peaks || peaks.length === 0) {
+      return 0;
+  }
 
-    let totalTimeDifference = 0;
-    const calculatedPeaks = peaks.slice(-m); // Get last m peaks
-    const validPeaksLength = calculatedPeaks.length <= 1 ? 1 : calculatedPeaks.length - 1;
+  // Calculate window size in milliseconds
+  const windowSizeInMilliseconds = windowSize * 1000;
 
-    for (let i = 1; i < calculatedPeaks.length; i++) {
-        totalTimeDifference += calculatedPeaks[i].time - calculatedPeaks[i - 1].time;
-    }
+  // Calculate the start of the time window
+  const timeWindowStart = currentTime - windowSizeInMilliseconds;
+  console.log('Current Time (ms):', currentTime);
+  console.log('Time Window Start (ms):', timeWindowStart);
 
-    const averageTimeDistance = totalTimeDifference / validPeaksLength; // in milliseconds
-    const averageTimeDistanceInSeconds = averageTimeDistance / 1000;
-    const frequency = 1 / averageTimeDistanceInSeconds;
+  // Filter peaks based on the time window
+  const totalPeaksCount = peaks.filter(peak => peak.time.getTime() > timeWindowStart).length;
+  console.log('Filtered Peaks Count:', totalPeaksCount);
 
-    return Math.round(frequency * 60);
+  if (totalPeaksCount === 0) {
+      return 0;
+  }
+
+  // Calculate frequency in peaks per second and convert to BPM
+  const frequency = totalPeaksCount / windowSize;
+  return Math.round(frequency * 60); // Convert to BPM
 }
+

@@ -10,14 +10,21 @@ export const useFaceMesh = (
   const effectRan = useRef(false);
   const [animate, setAnimate] = useState(false);
   const [lookingAtScreen, setLookingAtScreen] = useState(false);
+  const [isForwardNLevel, setIsForwardNLevel] = useState<boolean>(false);
+  const [isGazing, setIsGazing] = useState<boolean>(false);
   const meshDataRef = useRef<MeshResult>({
     euclideanDistance: null,
+    yaw: null,
+    turn: null,
     leftEyePoint: null,
     rightEyePoint: null,
+    noseTip: null,
+    leftNose: null,
+    rightNose: null,
     namedKeypoints: null,
   });
 
-  const UPDATE_MS = 20;
+  const UPDATE_MS = 2;
   const intervalRef = useRef<number | null>(null);
 
   const runFacemesh = useCallback(async () => {
@@ -26,15 +33,20 @@ export const useFaceMesh = (
         const video = videoRef.current;
         const face = await net.estimateFaces(video);
 
-        if (face) {
-          const { euclideanDistance, leftEyePoint, rightEyePoint, namedKeypoints } = getMesh(
+        if (face.length > 0) {
+          const { euclideanDistance, leftEyePoint, rightEyePoint, noseTip, leftNose, rightNose, namedKeypoints, yaw, turn } = getMesh(
             face as Prediction[]
           );
 
           meshDataRef.current = {
             euclideanDistance,
+            yaw,
+            turn,
             leftEyePoint,
             rightEyePoint,
+            noseTip,
+            leftNose,
+            rightNose,
             namedKeypoints,
           };
 
@@ -43,6 +55,25 @@ export const useFaceMesh = (
             const isLooking = isLookingAtScreen(namedKeypoints["leftEye"], namedKeypoints["rightEye"]);
             setLookingAtScreen(isLooking);
           }
+
+          // Determine if the person is looking forward and head is level
+          const isLookingForwardAndLevel = () => {
+            if (!meshDataRef.current.yaw || !meshDataRef.current.turn) return false;
+
+            const { yaw, turn } = meshDataRef.current;
+
+            // Define thresholds
+            const yawThreshold = 100;
+            const turnThreshold = 85;
+
+            // Determine if the person is looking forward and their head is level
+            const isLookingForward = Math.abs(yaw) >= yawThreshold && Math.abs(yaw) <= 170;
+            const isHeadLevel = Math.abs(turn) >= turnThreshold && Math.abs(turn) <= 120;
+
+            return isLookingForward && isHeadLevel;
+          };
+
+          setIsForwardNLevel(isLookingForwardAndLevel());
 
           setAnimate((prevCheck) => !prevCheck);
         }
@@ -80,15 +111,23 @@ export const useFaceMesh = (
     };
   }, [runFacemesh, videoRef]);
 
+  useEffect(() => {
+    const isGazing = lookingAtScreen && isForwardNLevel;
+    setIsGazing(isGazing);
+  }, [lookingAtScreen, isForwardNLevel]);
+
   return useMemo(
     () => ({
       animate,
       euclideanDistance: meshDataRef.current.euclideanDistance,
       leftEyePoint: meshDataRef.current.leftEyePoint,
       rightEyePoint: meshDataRef.current.rightEyePoint,
+      noseTip: meshDataRef.current.noseTip,
+      leftNose: meshDataRef.current.leftNose,
+      rightNose: meshDataRef.current.rightNose,
       namedKeypoints: meshDataRef.current.namedKeypoints,
-      lookingAtScreen,
+      isGazing: isGazing,
     }),
-    [animate, lookingAtScreen]
+    [animate, euclideanDistance]
   );
 };

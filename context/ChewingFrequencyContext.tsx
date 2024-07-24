@@ -1,3 +1,4 @@
+"use client";
 import React, {
   createContext,
   useState,
@@ -29,41 +30,43 @@ export const ChewingFrequencyProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const videoRef = useVideoRef();
-  const [chewingFrequency, setChewingFrequency] = useState<number | null>(null);
-  const [cutOffFrequency, setCutOffFrequency] = useState(0.5);
-  const [itemsNo, setItemsNo] = useState(160);
+  const [chewingFrequency, setChewingFrequency] = useState<number | null>(null); // Initial state set to null
+  const [cutOffFrequency] = useState(0.12);
+  const [itemsNo] = useState(240);
 
   const {
     animate,
-    leftEyePoint,
-    rightEyePoint,
+    noseTip,
     euclideanDistance,
   } = useFaceMesh(videoRef);
-  
-    const signalProcessingData = useSignalProcessing(
-      animate,
-      leftEyePoint,
-      rightEyePoint,
-      euclideanDistance,
-      cutOffFrequency,
-      itemsNo
-    );
 
-  // 设置咀嚼频率值的逻辑
+  const signalProcessingData = useSignalProcessing(
+    animate,
+    noseTip,
+    euclideanDistance,
+    cutOffFrequency,
+    itemsNo
+  );
+
+  // Use useEffect to defer client-specific logic
   useEffect(() => {
-    const calculateChewingFrequency = () => {
-      setChewingFrequency(avgFrequency(signalProcessingData.filteredPeaks, 5));
-    };
-    // 执行计算咀嚼频率的逻辑
-    calculateChewingFrequency();
+    if (typeof window !== 'undefined') { // Ensure this runs only on the client
+      const calculateChewingFrequency = () => {
+        const frequency = avgFrequency(signalProcessingData.filteredPeaks, 2.5);
+        setChewingFrequency(frequency);
+      };
+
+      // Execute the logic to calculate chewing frequency
+      calculateChewingFrequency();
+    }
   }, [animate]);
 
-  // 创建提供的值，供消费者使用
+  // Create the context value
   const contextValue: ChewingFrequencyContextType = {
     chewingFrequency: chewingFrequency,
   };
-  
-  // 返回包含提供程序的 JSX
+
+  // Return the context provider with the children
   return (
     <ChewingFrequencyContext.Provider value={contextValue}>
       {children}
