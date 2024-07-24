@@ -87,7 +87,7 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
       if (gazingStartTime) {
         const elapsedTime = (Date.now() - gazingStartTime) / 1000; // time in seconds
         if (
-          elapsedTime > 5 &&
+          elapsedTime > 3 &&
           (chewingFrequency === null || chewingFrequency < 10)
         ) {
           setIsEating(false);
@@ -100,9 +100,10 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
         }
       }
     } else {
+
       setGazingStartTime(null);
     }
-  }, [chewingFrequency]);
+  }, [chewingFrequency, isGazing]);
 
   useEffect(() => {
     if (!videoRef.current || typeof window === "undefined") return;
@@ -122,6 +123,7 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
         canvasRef.current &&
         leftEyePoint &&
         rightEyePoint &&
+        noseTip &&
         namedKeypoints &&
         ctx
       ) {

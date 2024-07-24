@@ -109,8 +109,11 @@ const PlayerPage: React.FC = () => {
         )}
       </div>
       <VideoProvider>
-        <div className="absolute w-full min-h-screen">
+        <div className="absolute w-full w-full h-[500px] hidden">
           <ChewingTestingNoSSR />
+        </div>
+        <div className="absolute w-full w-full h-[500px] hidden">
+          <UtensilDetection />
         </div>
       </VideoProvider>
     </div>

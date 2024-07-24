@@ -61,8 +61,8 @@ const UtensilDetection: React.FC = () => {
 
         const frameCenterX = canvas.width / 2;
         const frameCenterY = canvas.height / 2;
-        const thresholdX = canvas.width * 0.3;
-        const thresholdY = canvas.height * 0.3;
+        const thresholdX = canvas.width * 0.1;
+        const thresholdY = canvas.height * 0.1;
 
         predictions.forEach((prediction) => {
             if (prediction.score > 0.5 && foodClasses.includes(prediction.class)) {
