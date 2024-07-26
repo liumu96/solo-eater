@@ -26,22 +26,34 @@ const PlayerPage: React.FC = () => {
     setUserBehaviorInfo,
   } = useData();
 
+  const isFirstChange = useRef(true); // 使用 useRef 来跟踪第一次状态变化
+
   useEffect(() => {
-    if (!isEating) {
-      setUserBehaviorInfo({
-        resumeChewingTimes: userBehaviorInfo?.resumeChewingTimes,
-        stopChewingTimes: userBehaviorInfo?.stopChewingTimes
-          ? [...userBehaviorInfo?.stopChewingTimes, new Date(Date.now())]
-          : [new Date(Date.now())],
-      });
-    } else {
-      setUserBehaviorInfo({
-        resumeChewingTimes: userBehaviorInfo?.resumeChewingTimes
-          ? [...userBehaviorInfo?.resumeChewingTimes, new Date(Date.now())]
-          : [new Date(Date.now())],
-        stopChewingTimes: userBehaviorInfo?.resumeChewingTimes,
-      });
-    }
+    const updateBehaviorInfo = () => {
+      if (isFirstChange.current) {
+        // 第一次状态变化，不记录时间
+        isFirstChange.current = false;
+        return;
+      }
+
+      if (!isEating) {
+        setUserBehaviorInfo((prevInfo) => ({
+          resumeChewingTimes: prevInfo?.resumeChewingTimes || [],
+          stopChewingTimes: prevInfo?.stopChewingTimes
+            ? [...prevInfo.stopChewingTimes, new Date()]
+            : [new Date()],
+        }));
+      } else {
+        setUserBehaviorInfo((prevInfo) => ({
+          resumeChewingTimes: prevInfo?.resumeChewingTimes
+            ? [...prevInfo.resumeChewingTimes, new Date()]
+            : [new Date()],
+          stopChewingTimes: prevInfo?.stopChewingTimes || [],
+        }));
+      }
+    };
+
+    updateBehaviorInfo();
   }, [isEating]);
 
   // Check if the user is gazing at the screen and whether it changes over time

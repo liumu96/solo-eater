@@ -100,7 +100,6 @@ export const VideoProvider: React.FC<VideoProviderProps> = ({ children }) => {
   };
 
   const downloadRecording = () => {
-    console.log(recordedChunks, "recordedChunks");
     if (recordedChunks.length > 0) {
       const blob = new Blob(recordedChunks, { type: "video/mp4" });
       const url = URL.createObjectURL(blob);
