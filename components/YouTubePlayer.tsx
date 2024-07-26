@@ -47,7 +47,7 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ videoId }) => {
 
   const onPlayerReady = (event: any) => {
     playerRef.current = event.target;
-    startReducingPlaybackRate();
+    // startReducingPlaybackRate();
     setStartTime(Date.now());
   };
 
@@ -56,7 +56,7 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ videoId }) => {
       // 视频开始播放
       if (!startPlay) {
         setStartPlay(true);
-        startReducingPlaybackRate();
+        // startReducingPlaybackRate();
         startRecording();
       } else {
         // 视频恢复播放
@@ -138,7 +138,6 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ videoId }) => {
         className="w-full h-full"
         onReady={onPlayerReady}
         onStateChange={onPlayerStateChange}
-        onPlaybackRateChange={onPlaybackRateChange}
       />
       <ConfirmationDialog
         open={dialogOpen}
