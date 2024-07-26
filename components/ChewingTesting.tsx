@@ -42,7 +42,7 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
   const [itemsNo, setItemsNo] = useState(240);
   const [gazingStartTime, setGazingStartTime] = useState<number | null>(null);
   const [reminder, setReminder] = useState<string | null>(null);
-  const windowSize = 3.5;
+  const windowSize = 2;
   const signalProcessingData = useSignalProcessing(
     animate,
     noseTip,
@@ -93,31 +93,33 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
   }, [chewingFrequency]);
   useEffect(() => {
     if (isGazing) {
-      setGazingStartTime(Date.now());
-      if (gazingStartTime) {
-        const elapsedTime = (Date.now() - gazingStartTime) / 1000; // time in seconds
-        if (
-          elapsedTime > 5 &&
-          (chewingFrequency === null || chewingFrequency < 10)
-        ) {
+          // this is not needed setGazingStartTime(Date.now());
+      if (chewingFrequency === null || chewingFrequency < 17) {
           setIsEating(false);
-          setReminder(
-            "Please don't forget to chew your food while watching the video."
-          );
-        } else if (gazingStartTime) {
-          setReminder(null);
-          setIsEating(true);
-        }
+          if (gazingStartTime === null) {
+            setGazingStartTime(Date.now());
+          } else {
+            const elapsedTime = (Date.now() - gazingStartTime) / 1000;
+            if (elapsedTime >= 2) {
+              setIsEating(false);
+              setReminder(
+                "Please don't forget to chew your food while watching the video."
+              );
+              setGazingStartTime(null);
+            }
+          }
+      } else {
+        setIsEating(true);
+        setReminder(null);
+        setGazingStartTime(null);
       }
-    } else {
-      setGazingStartTime(null);
-      setIsEating(false);
-      setReminder(
-        "Please don't forget to chew your food while watching the video."
-      );
-    }
-  }, [chewingFrequency]);
-
+    } else if (gazingStartTime) {
+        setIsEating(false);
+        setGazingStartTime
+        setReminder(null);
+        }
+    }, [chewingFrequency, isGazing]);
+    
   useEffect(() => {
     if (!videoRef.current || typeof window === "undefined") return;
 
