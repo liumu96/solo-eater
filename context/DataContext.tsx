@@ -17,6 +17,10 @@ type DataContextType = {
   setIsEating: React.Dispatch<React.SetStateAction<boolean>>;
   videoPlayInfo: VideoPlayInfo | null;
   setVideoPlayInfo: React.Dispatch<React.SetStateAction<VideoPlayInfo | null>>;
+  userBehaviorInfo: UserBehaviorInfo | null;
+  setUserBehaviorInfo: React.Dispatch<
+    React.SetStateAction<UserBehaviorInfo | null>
+  >;
 };
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -26,11 +30,19 @@ export const DataProvider: React.FC<{
 }> = ({ children }) => {
   const [dominantColors, setDominantColors] = useState<number[][]>([]);
   const [videoLink, setVideoLink] = useState(
-    typeof window !== "undefined" ? localStorage.getItem("videoLink") || "" : ""
+    typeof window !== "undefined"
+      ? window.localStorage.getItem("videoLink") || ""
+      : ""
   );
   const [userInfo, setUserInfo] = useState<UserInfo>({
-    username: localStorage.getItem("username") || "",
-    eatingTime: +(localStorage.getItem("eatingTime") || 0),
+    username:
+      typeof window !== "undefined"
+        ? window.localStorage.getItem("username") || ""
+        : "",
+    eatingTime:
+      typeof window !== "undefined"
+        ? +(window.localStorage.getItem("eatingTime") || 0)
+        : 0,
   });
   const [chewingFrequency, setChewingFrequency] = useState<number>(0);
   const [isGazing, setIsGazing] = useState<boolean>(true); // Declare isGazing state variable and its setter function
@@ -38,6 +50,8 @@ export const DataProvider: React.FC<{
   const [videoPlayInfo, setVideoPlayInfo] = useState<VideoPlayInfo | null>(
     null
   );
+  const [userBehaviorInfo, setUserBehaviorInfo] =
+    useState<UserBehaviorInfo | null>(null);
 
   return (
     <DataContext.Provider
@@ -56,6 +70,8 @@ export const DataProvider: React.FC<{
         setIsEating,
         videoPlayInfo,
         setVideoPlayInfo,
+        userBehaviorInfo,
+        setUserBehaviorInfo,
       }}
     >
       {children}

@@ -23,7 +23,9 @@ export const VideoLinkProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [videoLink, setVideoLink] = useState(
-    typeof window !== "undefined" ? localStorage.getItem("videoLink") || "" : ""
+    typeof window !== "undefined"
+      ? window.localStorage.getItem("videoLink") || ""
+      : ""
   );
 
   return (

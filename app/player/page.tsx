@@ -17,24 +17,37 @@ const ChewingTestingNoSSR = dynamic(
 );
 
 const PlayerPage: React.FC = () => {
-  const { videoLink, chewingFrequency, isGazing } = useData();
+  const {
+    videoLink,
+    chewingFrequency,
+    isGazing,
+    isEating,
+    userBehaviorInfo,
+    setUserBehaviorInfo,
+  } = useData();
 
-  const threshold = 15; // Set your threshold value here
-  const [isEating, setIsEating] = useState(true);
+  useEffect(() => {
+    if (!isEating) {
+      setUserBehaviorInfo({
+        resumeChewingTimes: userBehaviorInfo?.resumeChewingTimes,
+        stopChewingTimes: userBehaviorInfo?.stopChewingTimes
+          ? [...userBehaviorInfo?.stopChewingTimes, new Date(Date.now())]
+          : [new Date(Date.now())],
+      });
+    } else {
+      setUserBehaviorInfo({
+        resumeChewingTimes: userBehaviorInfo?.resumeChewingTimes
+          ? [...userBehaviorInfo?.resumeChewingTimes, new Date(Date.now())]
+          : [new Date(Date.now())],
+        stopChewingTimes: userBehaviorInfo?.resumeChewingTimes,
+      });
+    }
+  }, [isEating]);
 
   // Check if the user is gazing at the screen and whether it changes over time
   useEffect(() => {
     console.log("isGazing value:", isGazing);
   }, [isGazing]);
-
-  // TODO: isEating
-  useEffect(() => {
-    if (chewingFrequency < threshold) {
-      setIsEating(false);
-    } else {
-      setIsEating(true);
-    }
-  }, [chewingFrequency]);
 
   // 提取 YouTube 视频 ID https://www.youtube.com/watch?v=lAmXfsZvTFo&ab_channel=GhibliRelaxingSoul
   const getYouTubeVideoId = (url: string) => {
@@ -50,9 +63,9 @@ const PlayerPage: React.FC = () => {
 
   return (
     <div className="h-screen w-full flex flex-col items-center justify-center bg-black">
-      <div className="absolute top-4 left-4 text-white z-50">
+      {/* <div className="absolute top-4 left-4 text-white z-50">
         <BackButton fontSize={48} />
-      </div>
+      </div> */}
       <VideoProvider>
         <div className="w-full h-full flex flex-col items-center justify-center z-40">
           {videoId ? (

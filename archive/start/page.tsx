@@ -16,7 +16,7 @@ const StartPage: React.FC = () => {
     if (!isValidYouTubeUrl(videoLink)) {
       setError("Please enter a valid YouTube video link.");
     } else {
-      localStorage.setItem("videoLink", videoLink);
+      window.localStorage.setItem("videoLink", videoLink);
     }
   };
   const updateUserInfo = (e: { target: { value: string | number } }) => {

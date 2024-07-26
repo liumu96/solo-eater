@@ -76,6 +76,11 @@ declare global {
     resumeTimes: Array<Date>;
   }
 
+  interface UserBehaviorInfo {
+    stopChewingTimes?: Array<Date>;
+    resumeChewingTimes?: Array<Date>;
+  }
+
   interface Window {
     gtag: (
       command: "config" | "event",

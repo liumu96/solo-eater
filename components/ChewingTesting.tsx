@@ -91,9 +91,6 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
   useEffect(() => {
     // console.log("Chewing Frequency Updated:", chewingFrequency); // Debug log
   }, [chewingFrequency]);
-
-  // const [isEating, setIsEating] = useState(true);
-
   useEffect(() => {
     if (isGazing) {
       setGazingStartTime(Date.now());

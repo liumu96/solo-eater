@@ -65,9 +65,9 @@ const HomePage = () => {
     }
 
     if (!hasError) {
-      localStorage.setItem("username", username);
-      localStorage.setItem("eatingTime", eatingTime.toString());
-      localStorage.setItem("videoLink", videoLink);
+      window.localStorage.setItem("username", username);
+      window.localStorage.setItem("eatingTime", eatingTime.toString());
+      window.localStorage.setItem("videoLink", videoLink);
       setUserInfo({
         eatingTime,
         username,

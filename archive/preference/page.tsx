@@ -43,7 +43,10 @@ const PreferencesPage = () => {
   }, [selectedFeatures]);
 
   useEffect(() => {
-    localStorage.setItem("selectedFeatures", JSON.stringify(selectedFeatures));
+    window.localStorage.setItem(
+      "selectedFeatures",
+      JSON.stringify(selectedFeatures)
+    );
   }, [selectedFeatures]);
 
   // todo 保存preferences
