@@ -29,7 +29,7 @@ const HomePage = () => {
           return prevTitle;
         }
       });
-    }, 300);
+    }, 200);
     return () => clearInterval(timerId);
   }, []);
 
@@ -104,7 +104,7 @@ const HomePage = () => {
           Welcome to {title}
         </h1>
 
-        <div className="mb-8 flex flex-col items-center">
+        <div className="mb-8 flex flex-col items-center w-full">
           <h2 className="text-2xl font-bold mb-4 text-center">Step 1</h2>
           <Button
             onClick={handleSurveyClick}
@@ -112,7 +112,7 @@ const HomePage = () => {
             color="secondary"
             size="large"
             fullWidth
-            className="mt-4 w-auto"
+            className="mt-4 max-w-xs"
           >
             Take Survey
           </Button>
@@ -169,6 +169,8 @@ const HomePage = () => {
               variant="contained"
               color="primary"
               size="large"
+              fullWidth
+              className="max-w-xs"
               onClick={handleStart}
             >
               Get Started
