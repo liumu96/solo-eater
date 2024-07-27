@@ -43,24 +43,30 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
   );
 
   // Define a default onFrequencyUpdate function if not provided
-  const defaultOnFrequencyUpdate = (frequency: number | null) => {
-    console.log("Updated Frequency:", frequency);
-  };
 
+  //check of the signal proceesing data is empty
+  if (!signalProcessingData) {
+    console.log("Signal Processing Data is empty");
+  }
+
+  const filteredPeaks = signalProcessingData.peaks;
+  if (!filteredPeaks) {
+    console.log("Filtered Peaks is empty");
+  }
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const defaultOnFrequencyUpdate = (frequency: number | null) => {
-      console.log("Frequency:", frequency);
-    };
-
     const calculateChewingFrequency = () => {
-      console.log("Filtered Peaks:", signalProcessingData.filteredPeaks);
+      console.log("Filtered Peaks:", filteredPeaks);
+      // check if the filteredPeaks is empty
+      if (filteredPeaks.length === 0) {
+        setChewingFrequency(0.5555);
+        return;
+      }
       const timeNow = Date.now();
       const frequency = avgFrequency(signalProcessingData.filteredPeaks, timeNow, windowSize);
       console.log("Calculated Frequency:", frequency); // Debug log
-      setChewingFrequency(frequency);
-      (onFrequencyUpdate || defaultOnFrequencyUpdate)(frequency); // Use the provided function or the default one
+      setChewingFrequency(frequency); // Use the provided function or the default one
     };
 
     // Calculate initially
@@ -74,10 +80,6 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
     // Clean up the interval when the component unmounts
     return () => clearInterval(interval);
   }, [animate]);
-
-  useEffect(() => {
-    console.log("Chewing Frequency Updated:", chewingFrequency); // Debug log
-  }, [chewingFrequency]);
   
   const [isEating, setIsEating] = useState(true);
 
