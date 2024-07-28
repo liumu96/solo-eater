@@ -99,7 +99,7 @@ const HomePage = () => {
           {/* <h2 className="text-2xl font-bold mb-4 text-center">Step 2</h2> */}
           <div className="mb-6">
             <label className="block text-lg font-semibold mb-2">
-              Enter Your Username
+              Enter Your Participant ID
             </label>
             <input
               type="text"
@@ -140,6 +140,10 @@ const HomePage = () => {
               <p className="text-red-500 mt-1">{eatingTimeError}</p>
             )} */}
           </div>
+          <p className="mb-4">
+            Once you start watching this video for this meal, you won’t be able
+            to change it. Thanks for understanding!
+          </p>
           <div className="flex justify-center">
             <Button
               variant="contained"
