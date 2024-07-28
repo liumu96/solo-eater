@@ -92,7 +92,7 @@ const PlayerPage: React.FC = () => {
           )}
         </div>
 
-        <div className="absolute h-[50px] w-[50px] z-50 -right-full">
+        <div className="absolute h-[50px] w-[50px] z-50 hidden">
           <ChewingTestingNoSSR />
         </div>
       </div>

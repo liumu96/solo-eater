@@ -233,7 +233,10 @@ const UserDataPage = () => {
       </Typography>
       <Button
         onClick={() => {
-          window.open("https://forms.gle/7U6NvdqY6ANL81su8", "_blank");
+          window.open(
+            "https://docs.google.com/forms/d/e/1FAIpQLScBR7X0QVwU9VJQMFBG7UW4Ce0CwxvpfuGkSEkyGeo5v99ROw/viewform?usp=sf_link",
+            "_blank"
+          );
         }}
         variant="contained"
         color="secondary"
