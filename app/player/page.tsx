@@ -75,7 +75,7 @@ const PlayerPage: React.FC = () => {
 
   return (
     <VideoProvider>
-      <div className="h-screen w-full flex flex-col items-center justify-center ">
+      <div className="h-screen w-full flex flex-col items-center justify-center bg-black">
         {/* <div className="absolute top-4 left-4 text-white z-50">
         <BackButton fontSize={48} />
       </div> */}
@@ -92,7 +92,7 @@ const PlayerPage: React.FC = () => {
           )}
         </div>
 
-        <div className="absolute h-[50px] w-[50px] z-50 -right-10 hidden">
+        <div className="absolute h-[50px] w-[50px] z-50 -right-full">
           <ChewingTestingNoSSR />
         </div>
       </div>

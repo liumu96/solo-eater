@@ -51,10 +51,10 @@ export default function Layout({ children }: { children: ReactNode }) {
       <body className={inter.className}>
         <DataProvider>
           <PreferencesProvider>
-            <VideoProvider>
-              {children}
-              <CameraPermission />
-            </VideoProvider>
+            {/* <VideoProvider> */}
+            {children}
+            <CameraPermission />
+            {/* </VideoProvider> */}
           </PreferencesProvider>
         </DataProvider>
       </body>

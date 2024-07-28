@@ -9,8 +9,6 @@ import React, {
   ReactNode,
 } from "react";
 
-import useVideoRef from "@/hooks/useVideoRef";
-
 interface VideoContextProps {
   videoRef: React.RefObject<HTMLVideoElement>;
   stream: MediaStream | null;
@@ -29,7 +27,8 @@ interface VideoProviderProps {
 const VideoContext = createContext<VideoContextProps | undefined>(undefined);
 
 export const VideoProvider: React.FC<VideoProviderProps> = ({ children }) => {
-  const videoRef = useVideoRef();
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(
     null
@@ -42,9 +41,8 @@ export const VideoProvider: React.FC<VideoProviderProps> = ({ children }) => {
       const videoStream = await navigator.mediaDevices.getUserMedia({
         video: true,
       });
-      setStream(videoStream);
 
-      console.log(1111, videoStream, "videoStream");
+      setStream(videoStream);
 
       if (videoRef.current) {
         videoRef.current.srcObject = videoStream;
@@ -54,9 +52,12 @@ export const VideoProvider: React.FC<VideoProviderProps> = ({ children }) => {
     }
   };
 
-  useEffect(() => {
-    requestCameraPermission();
-  }, []);
+  // useEffect(() => {
+  //   console.log(videoRef.current, "videoRef.current");
+  //   if (videoRef.current) {
+  //     requestCameraPermission();
+  //   }
+  // }, [videoRef.current]);
 
   useEffect(() => {
     if (stream) {

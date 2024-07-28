@@ -22,7 +22,7 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
     startRecording,
     stopRecording,
     downloadRecording,
-    mediaRecorder,
+    requestCameraPermission,
   } = useVideo();
 
   const {
@@ -190,6 +190,13 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
   const toggleMaximize = () => {
     setMaximized(!maximized);
   };
+
+  useEffect(() => {
+    if (videoRef.current && !videoRef.current.srcObject) {
+      console.log(videoRef.current, "videoRef.current11");
+      requestCameraPermission();
+    }
+  }, [videoRef.current]);
 
   const [startChewing, setStartChewing] = useState(false);
 
