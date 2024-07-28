@@ -10,7 +10,6 @@ import { useData } from "@/context/DataContext";
 
 const StartPage: React.FC = () => {
   const { userInfo, setUserInfo, setVideoLink, videoLink } = useData();
-  const [eatingTime, setEatingTime] = useState(userInfo.eatingTime || ""); // minute
   const [error, setError] = useState("");
   const handleContinue = () => {
     if (!isValidYouTubeUrl(videoLink)) {
@@ -21,10 +20,8 @@ const StartPage: React.FC = () => {
   };
   const updateUserInfo = (e: { target: { value: string | number } }) => {
     console.log(e.target.value);
-    setEatingTime(+e.target.value);
     setUserInfo({
       ...userInfo,
-      eatingTime: +e.target.value,
     });
   };
 
@@ -44,14 +41,7 @@ const StartPage: React.FC = () => {
             onChange={(e) => setVideoLink(e.target.value)}
           />
           {error && <p className="text-red-500 mb-2">{error}</p>}
-          <p className="text-lg font-semibold mb-2 relative">Eating Time</p>
-          <input
-            type="text"
-            placeholder="Input your eating time(minutes)"
-            className="p-2 border border-gray-300 rounded mb-4"
-            value={eatingTime}
-            onChange={updateUserInfo}
-          />
+
           <Link href={isValidYouTubeUrl(videoLink) ? "/preference" : ""}>
             <Button
               variant="contained"
