@@ -90,7 +90,7 @@ export const useFaceMesh = (
             // Determine if the person is looking forward
             const isLookingForward =
               Math.abs(turn) >= turnThreshold && Math.abs(turn) <= UpperBound;
-              
+
             return isLookingForward;
           };
 

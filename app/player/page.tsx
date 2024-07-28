@@ -74,11 +74,11 @@ const PlayerPage: React.FC = () => {
   const videoId = getYouTubeVideoId(videoLink);
 
   return (
-    <div className="h-screen w-full flex flex-col items-center justify-center bg-black">
-      {/* <div className="absolute top-4 left-4 text-white z-50">
+    <VideoProvider>
+      <div className="h-screen w-full flex flex-col items-center justify-center bg-black">
+        {/* <div className="absolute top-4 left-4 text-white z-50">
         <BackButton fontSize={48} />
       </div> */}
-      <VideoProvider>
         <div className="w-full h-full flex flex-col items-center justify-center z-40">
           {videoId ? (
             <div className="w-full h-full flex items-center justify-center">
@@ -92,11 +92,11 @@ const PlayerPage: React.FC = () => {
           )}
         </div>
 
-        <div className="absolute w-full h-[500px] hidden">
+        <div className="absolute h-[500px] hidden w-full">
           <ChewingTestingNoSSR />
         </div>
-      </VideoProvider>
-    </div>
+      </div>
+    </VideoProvider>
   );
 };
 
