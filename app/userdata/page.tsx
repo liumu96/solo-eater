@@ -26,7 +26,6 @@ const UserDataPage = () => {
   const testUserInfo = {
     participantID: userInfo.username,
     videoLink: videoLink,
-    mealDuration: userInfo.eatingTime,
     videoWatchingDuration: {
       open: videoPlayInfo?.startTime || new Date(),
       close: videoPlayInfo?.stopTime || new Date(),
@@ -96,8 +95,7 @@ const UserDataPage = () => {
         y += 24;
         ctx.fillText(`Video Link: ${testUserInfo.videoLink}`, 10, y);
         y += 24;
-        ctx.fillText(`Meal Duration: ${testUserInfo.mealDuration} mins`, 10, y);
-        y += 24;
+
         ctx.fillText(`Video Watching Duration:`, 10, y);
         y += 24;
         ctx.fillText(

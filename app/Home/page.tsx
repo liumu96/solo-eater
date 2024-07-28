@@ -11,12 +11,8 @@ const HomePage = () => {
   const [title, setTitle] = useState("");
   const { userInfo, setUserInfo, setVideoLink, videoLink } = useData();
   const [username, setUsername] = useState(userInfo.username || "");
-  const [eatingTime, setEatingTime] = useState(userInfo.eatingTime || 0); // minute
   const [usernameError, setUsernameError] = useState("");
   const [videoLinkError, setVideoLinkError] = useState("");
-  const [eatingTimeError, setEatingTimeError] = useState("");
-  const [surveyTaken, setSurveyTaken] = useState(false);
-  const [surveyError, setSurveyError] = useState("");
 
   useEffect(() => {
     const timerId = setInterval(() => {
@@ -50,26 +46,10 @@ const HomePage = () => {
       setUsernameError("");
     }
 
-    if (!eatingTime) {
-      setEatingTimeError("Please enter your eating time.");
-      hasError = true;
-    } else {
-      setEatingTimeError("");
-    }
-
-    if (!surveyTaken) {
-      setSurveyError("Please take the survey.");
-      hasError = true;
-    } else {
-      setSurveyError("");
-    }
-
     if (!hasError) {
       window.localStorage.setItem("username", username);
-      window.localStorage.setItem("eatingTime", eatingTime.toString());
       window.localStorage.setItem("videoLink", videoLink);
       setUserInfo({
-        eatingTime,
         username,
       });
       router.push("/player");
@@ -80,19 +60,15 @@ const HomePage = () => {
     setUsername(e.target.value);
   };
 
-  const updateEatingTime = (e: ChangeEvent<HTMLInputElement>) => {
-    setEatingTime(+e.target.value);
-  };
-
   const updateVideoLink = (e: ChangeEvent<HTMLInputElement>) => {
     setVideoLink(e.target.value);
   };
 
-  const handleSurveyClick = () => {
-    setSurveyTaken(true);
-    setSurveyError("");
-    window.open("https://forms.gle/eqXKZAf9qDVdzcgn9", "_blank");
-  };
+  // const handleSurveyClick = () => {
+  //   setSurveyTaken(true);
+  //   setSurveyError("");
+  //   window.open("https://forms.gle/eqXKZAf9qDVdzcgn9", "_blank");
+  // };
 
   return (
     <div className="w-full flex flex-col items-center justify-center min-h-screen bg-white">
@@ -104,7 +80,7 @@ const HomePage = () => {
           Welcome to {title}
         </h1>
 
-        <div className="mb-8 flex flex-col items-center w-full">
+        {/* <div className="mb-8 flex flex-col items-center w-full">
           <h2 className="text-2xl font-bold mb-4 text-center">Step 1</h2>
           <Button
             onClick={handleSurveyClick}
@@ -117,10 +93,10 @@ const HomePage = () => {
             Take Survey
           </Button>
           {surveyError && <p className="text-red-500 mt-2">{surveyError}</p>}
-        </div>
+        </div> */}
 
         <div className="mb-8">
-          <h2 className="text-2xl font-bold mb-4 text-center">Step 2</h2>
+          {/* <h2 className="text-2xl font-bold mb-4 text-center">Step 2</h2> */}
           <div className="mb-6">
             <label className="block text-lg font-semibold mb-2">
               Enter Your Username
@@ -150,7 +126,7 @@ const HomePage = () => {
               <p className="text-red-500 mt-1">{videoLinkError}</p>
             )}
 
-            <label className="block text-lg font-semibold mb-2">
+            {/* <label className="block text-lg font-semibold mb-2">
               Eating Time / Minutes
             </label>
             <input
@@ -162,7 +138,7 @@ const HomePage = () => {
             />
             {eatingTimeError && (
               <p className="text-red-500 mt-1">{eatingTimeError}</p>
-            )}
+            )} */}
           </div>
           <div className="flex justify-center">
             <Button

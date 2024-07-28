@@ -39,10 +39,6 @@ export const DataProvider: React.FC<{
       typeof window !== "undefined"
         ? window.localStorage.getItem("username") || ""
         : "",
-    eatingTime:
-      typeof window !== "undefined"
-        ? +(window.localStorage.getItem("eatingTime") || 0)
-        : 0,
   });
   const [chewingFrequency, setChewingFrequency] = useState<number>(0);
   const [isGazing, setIsGazing] = useState<boolean>(true); // Declare isGazing state variable and its setter function

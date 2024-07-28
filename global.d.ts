@@ -65,7 +65,6 @@ declare global {
   // 定义用户信息
   interface UserInfo {
     username: string;
-    eatingTime?: number;
     preferences?: Array<string>;
   }
 
