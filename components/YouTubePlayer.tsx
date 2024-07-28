@@ -139,11 +139,11 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ videoId }) => {
         onReady={onPlayerReady}
         onStateChange={onPlayerStateChange}
       />
-      <ConfirmationDialog
+      {/* <ConfirmationDialog
         open={dialogOpen}
         onClose={handleDialogClose}
         onConfirm={handleDialogConfirm}
-      />
+      /> */}
     </div>
   );
 };
