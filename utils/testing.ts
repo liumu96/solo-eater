@@ -71,14 +71,14 @@ export const getMesh = (predictions: Prediction[]): MeshResult => {
 
     namedKeypoints["leftEye"] = keypoints.filter((obj) => obj.name === "leftEye");
     namedKeypoints["rightEye"] = keypoints.filter((obj) => obj.name === "rightEye");
-
+    // added lip points 13, 82, 312
     const faceOvalIndexes = [
-      58, 172, 136, 150, 149, 176, 178, 148, 152, 377, 400, 378, 379, 365, 397,
+      58, 84, 17, 314, 172, 136, 150, 149, 176, 178, 148, 152, 377, 400, 378, 379, 365, 397,
       288, 381,
     ];
     namedKeypoints["faceOval"] = faceOvalIndexes.map((d) => keypoints[d]);
 
-    noseTip = { ...keypoints[1], name: "nose tip" };
+    noseTip = { ...keypoints[195], name: "nose tip" };
     leftNose = { ...keypoints[279], name: "left nose" };
     rightNose = { ...keypoints[49], name: "right nose" };
 

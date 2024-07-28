@@ -23,5 +23,6 @@ export function avgFrequency(peaks, currentTime, windowSize) {
 
   // Calculate frequency in peaks per second and convert to BPM
   const frequency = totalPeaksCount / windowSize;
+  //console.log("Frequency (Hz):", frequency);  // Frequency in Hz
   return Math.round(frequency * 60); // Convert to BPM
 }

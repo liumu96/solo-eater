@@ -38,11 +38,11 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
   // const [chewingFrequency, setChewingFrequency] = useState<number | null>(null);
   const { chewingFrequency, setChewingFrequency, isEating, setIsEating } =
     useData();
-  const [cutOffFrequency, setCutOffFrequency] = useState(0.12);
+  const [cutOffFrequency, setCutOffFrequency] = useState(0.08);
   const [itemsNo, setItemsNo] = useState(240);
   const [gazingStartTime, setGazingStartTime] = useState<number | null>(null);
   const [reminder, setReminder] = useState<string | null>(null);
-  const windowSize = 2;
+  const windowSize = 6;
   const signalProcessingData = useSignalProcessing(
     animate,
     noseTip,
@@ -64,7 +64,7 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
     };
 
     const calculateChewingFrequency = () => {
-      console.log("Filtered Peaks:", signalProcessingData.filteredPeaks);
+      //console.log("Filtered Peaks:", signalProcessingData.filteredPeaks);
       const timeNow = Date.now();
       const frequency = avgFrequency(
         signalProcessingData.filteredPeaks,
@@ -94,13 +94,13 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
   useEffect(() => {
     if (isGazing) {
       // this is not needed setGazingStartTime(Date.now());
-      if (chewingFrequency === null || chewingFrequency < 17) {
+      if (chewingFrequency === null || chewingFrequency < 11) {
         setIsEating(false);
         if (gazingStartTime === null) {
           setGazingStartTime(Date.now());
         } else {
           const elapsedTime = (Date.now() - gazingStartTime) / 1000;
-          if (elapsedTime >= 2) {
+          if (elapsedTime > 3) {
             setIsEating(false);
             setReminder(
               "Please don't forget to chew your food while watching the video."
@@ -113,9 +113,9 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
         setReminder(null);
         setGazingStartTime(null);
       }
-    } else if (gazingStartTime) {
+    } else {
       setIsEating(false);
-      setGazingStartTime;
+      setGazingStartTime(null);
       setReminder(null);
     }
   }, [chewingFrequency, isGazing]);

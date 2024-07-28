@@ -96,7 +96,7 @@ export default function useSignalProcessing(
     let filteredData = dataRef.current.filteredData;
     let nosePointDistance = dataRef.current.nosePointDistance;
 
-    if (data.length >= 10) {
+    if (data.length >= 2) {
       let prev;
       if (filteredData.length === 0) {
         prev = data.slice(-1)[0];
@@ -118,8 +118,8 @@ export default function useSignalProcessing(
       const peaks = peakIndexes.map((i) => filteredData[i]);
       updateDataRef("peaks", peaks);
 
-      const windowSize = 5;
-      const threshold = 0.8; // set a threshold for the correlation coefficient
+      const windowSize = 10;
+      const threshold = 0.85; // set a threshold for the correlation coefficient
 
       const correlationCoefficients = calculateCorrelation(
         filteredData,
@@ -173,7 +173,7 @@ export default function useSignalProcessing(
 
     // Immediate zero detection
     const newFilteredItem = dataRef.current.newFilteredItem;
-    if (newFilteredItem && newFilteredItem.value < 20) {
+    if (newFilteredItem && newFilteredItem.value < 12) {
       updateDataRef("filteredPeaks", []);
       updateDataRef("removedPeaks", []);
     }
