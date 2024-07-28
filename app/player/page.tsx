@@ -83,7 +83,7 @@ const PlayerPage: React.FC = () => {
           {videoId ? (
             <div className="w-full h-full flex items-center justify-center">
               <YouTubePlayer videoId={videoId} />
-              {!isEating && <DanmakuComp />}
+              {/* {!isEating && <DanmakuComp />} */}
             </div>
           ) : (
             <div className="text-white">
