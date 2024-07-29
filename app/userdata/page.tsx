@@ -81,6 +81,15 @@ const UserDataPage = () => {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
+    const alarmInfo = setTimeout(() => {
+      setOpen(true);
+    }, 10000);
+    return () => {
+      clearTimeout(alarmInfo);
+    };
+  }, []);
+
+  useEffect(() => {
     const canvas = canvasRef.current;
     if (canvas) {
       const ctx = canvas.getContext("2d");
