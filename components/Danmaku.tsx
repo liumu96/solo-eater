@@ -5,6 +5,10 @@ interface DanmakuItem {
   text: string;
 }
 
+type DanmakuProps = {
+  visible?: boolean;
+};
+
 const foodMessages = [
   "😋 Feel the different textures as you chew. An adventure for taste buds",
   "😍 Each bite is a gift to your senses. ",
@@ -25,7 +29,7 @@ const foodMessages = [
   "😌 Your meal smells wonderful! Let the aromas soothe you",
 ];
 
-const Danmaku: React.FC = () => {
+const Danmaku: React.FC<DanmakuProps> = ({ visible = false }) => {
   const [danmakuList, setDanmakuList] = useState<DanmakuItem[]>([]);
   const messageIndexRef = useRef(0);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -64,7 +68,7 @@ const Danmaku: React.FC = () => {
   }, [danmakuList]);
 
   return (
-    <div className="danmaku-container">
+    <div className={`danmaku-container ${visible ? "flex" : "hidden"}`}>
       {danmakuList.map((danmaku) => (
         <div key={danmaku.id} className="danmaku-item">
           {danmaku.text}

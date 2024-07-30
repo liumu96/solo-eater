@@ -28,6 +28,17 @@ const PlayerPage: React.FC = () => {
 
   const isFirstChange = useRef(true); // 使用 useRef 来跟踪第一次状态变化
 
+  // const formatDate = (date: Date) => {
+  //   return date.toLocaleString("en-GB", {
+  //     year: "numeric",
+  //     month: "short",
+  //     day: "numeric",
+  //     hour: "2-digit",
+  //     minute: "2-digit",
+  //     second: "2-digit",
+  //   });
+  // };
+
   useEffect(() => {
     const updateBehaviorInfo = () => {
       if (isFirstChange.current) {
@@ -43,6 +54,7 @@ const PlayerPage: React.FC = () => {
             ? [...prevInfo.stopChewingTimes, new Date()]
             : [new Date()],
         }));
+        // console.log("StopEating: ", formatDate(new Date()));
       } else {
         setUserBehaviorInfo((prevInfo) => ({
           resumeChewingTimes: prevInfo?.resumeChewingTimes
@@ -50,6 +62,7 @@ const PlayerPage: React.FC = () => {
             : [new Date()],
           stopChewingTimes: prevInfo?.stopChewingTimes || [],
         }));
+        // console.log("StartEating: ", formatDate(new Date()));
       }
     };
 
@@ -83,7 +96,7 @@ const PlayerPage: React.FC = () => {
           {videoId ? (
             <div className="w-full h-full flex items-center justify-center">
               <YouTubePlayer videoId={videoId} />
-              {!isEating && <DanmakuComp />}
+              <DanmakuComp visible={!isEating} />
             </div>
           ) : (
             <div className="text-white">

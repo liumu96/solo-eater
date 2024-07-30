@@ -73,7 +73,7 @@ body {
   height: 199px; /* 高度调整为屏幕的20% */
   overflow: hidden;
   pointer-events: none;
-  display: flex;
+  /* display: flex; */
   flex-direction: column; /* 正序排列 */
   justify-content: flex-end; /* 保证弹幕从下往上 */
 }
