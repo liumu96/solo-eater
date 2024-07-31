@@ -30,6 +30,29 @@ const pauseTimes: { [key: string]: number } = {
   "20": 0,
 };
 
+const minFrequency: { [key: string]: number } = {
+  "1": 0,
+  "2": 0,
+  "3": 24,
+  "4": 0,
+  "5": 0,
+  "6": 21,
+  "7": 0,
+  "8": 19,
+  "9": 17,
+  "10": 20,
+  "11": 0,
+  "12": 0,
+  "13": 0,
+  "14": 0,
+  "15": 0,
+  "16": 0,
+  "17": 0,
+  "18": 14,
+  "19": 0,
+  "20": 0, 
+};
+
 interface ChewingTestingProps {
   onFrequencyUpdate?: (frequency: number | null) => void; // Make this prop optional
 }
@@ -67,13 +90,14 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
     userInfo,
   } = useData();
   const participantID = userInfo.username; // participantID
-  const pauseTime = pauseTimes[String(participantID)] || 2;
+  //const pauseTime = pauseTimes[String(participantID)] || 3;
 
   const [cutOffFrequency, setCutOffFrequency] = useState(0.06);
   const [itemsNo, setItemsNo] = useState(240);
   const [gazingStartTime, setGazingStartTime] = useState<number | null>(null);
   const [reminder, setReminder] = useState<string | null>(null);
-  const windowSize = 3;
+  const windowSize = 3; //pauseTime;// pauseTimes[String(participantID)] || 3
+  const minFreqThreshold = 20; //minFrequency[String(participantID)] || 20;
   const signalProcessingData = useSignalProcessing(
     animate,
     noseTip,
@@ -116,7 +140,7 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
 
     // Calculate initially
     calculateChewingFrequency();
-    // console.log("Calculated Frequency:", chewingFrequency);
+    //console.log("Calculated Frequency:", chewingFrequency);
     // Set up interval to calculate every second，
     const interval = setInterval(() => {
       calculateChewingFrequency();
@@ -137,7 +161,7 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
         if (
           chewingFrequency[1] === null ||
           chewingFrequency[1] === 0 ||
-          chewingFrequency[1] < 20
+          chewingFrequency[1] < minFreqThreshold
         ) {
           setIsEating(false);
           setReminder(
@@ -145,7 +169,7 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
           );
         }
       } else {
-        if (chewingFrequency[0] > 0 || chewingFrequency[0] > 20) {
+        if (chewingFrequency[0] > 0 || chewingFrequency[0] > minFreqThreshold) {
           setIsEating(true);
           setReminder(null);
         }
