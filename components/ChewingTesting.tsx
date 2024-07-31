@@ -7,6 +7,29 @@ import useSignalProcessing from "@/hooks/useSignalProcessing";
 import { avgFrequency, avgFreq } from "@/utils/avgFrequency";
 import { useData } from "@/context/DataContext";
 
+const pauseTimes: { [key: string]: number } = {
+  "1": 0,
+  "2": 0,
+  "3": 2.52,
+  "4": 0,
+  "5": 0,
+  "6": 2.884395,
+  "7": 0,
+  "8": 3.178425,
+  "9": 3.55413,
+  "10": 2.96607,
+  "11": 0,
+  "12": 0,
+  "13": 0,
+  "14": 0,
+  "15": 0,
+  "16": 0,
+  "17": 0,
+  "18": 4.14219,
+  "19": 0,
+  "20": 0,
+};
+
 interface ChewingTestingProps {
   onFrequencyUpdate?: (frequency: number | null) => void; // Make this prop optional
 }
@@ -36,8 +59,16 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
   } = useFaceMesh(videoRef);
 
   // const [chewingFrequency, setChewingFrequency] = useState<number | null>(null);
-  const { chewingFrequency, setChewingFrequency, isEating, setIsEating } =
-    useData();
+  const {
+    chewingFrequency,
+    setChewingFrequency,
+    isEating,
+    setIsEating,
+    userInfo,
+  } = useData();
+  const participantID = userInfo.username; // participantID
+  const pauseTime = pauseTimes[String(participantID)] || 2;
+
   const [cutOffFrequency, setCutOffFrequency] = useState(0.06);
   const [itemsNo, setItemsNo] = useState(240);
   const [gazingStartTime, setGazingStartTime] = useState<number | null>(null);
@@ -76,7 +107,7 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
         timeNow,
         1
       );
-      const frequencies = [oneFrequency, frequency]
+      const frequencies = [oneFrequency, frequency];
       //console.log("signalProcessingData.filteredPeaks", signalProcessingData.filteredPeaks);
       //console.log("Calculated Frequency:", frequencies); // Debug log
       setChewingFrequency(frequencies);
@@ -85,8 +116,8 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
 
     // Calculate initially
     calculateChewingFrequency();
-    console.log("Calculated Frequency:", chewingFrequency);
-    // Set up interval to calculate every second， 
+    // console.log("Calculated Frequency:", chewingFrequency);
+    // Set up interval to calculate every second，
     const interval = setInterval(() => {
       calculateChewingFrequency();
     }, 800); // Every second
@@ -97,20 +128,24 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
   }, [animate]); // Only run when the animation changes
 
   //useEffect(() => {
-    // console.log("Chewing Frequency Updated:", chewingFrequency); // Debug log
+  // console.log("Chewing Frequency Updated:", chewingFrequency); // Debug log
   //}, [chewingFrequency]);
   useEffect(() => {
     if (isGazing) {
       // this is not needed setGazingStartTime(Date.now());
       if (isEating) {
-        if (chewingFrequency[1] === null ||chewingFrequency[1] === 0 || chewingFrequency[1] < 20){
+        if (
+          chewingFrequency[1] === null ||
+          chewingFrequency[1] === 0 ||
+          chewingFrequency[1] < 20
+        ) {
           setIsEating(false);
           setReminder(
-          "Please don't forget to chew your food while watching the video."
+            "Please don't forget to chew your food while watching the video."
           );
-        };
+        }
       } else {
-        if (chewingFrequency[0] > 0 || chewingFrequency[0] > 20){
+        if (chewingFrequency[0] > 0 || chewingFrequency[0] > 20) {
           setIsEating(true);
           setReminder(null);
         }
@@ -118,9 +153,9 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
     } else {
       setIsEating(false);
       setReminder("Not Looking at Screen.");
-      }
-    }, [chewingFrequency, isGazing]);
-  console.log("isEating", isEating);
+    }
+  }, [chewingFrequency, isGazing]);
+  // console.log("isEating", isEating);
   useEffect(() => {
     if (!videoRef.current || typeof window === "undefined") return;
 
@@ -135,12 +170,7 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
     };
 
     const drawCanvas = () => {
-      if (
-        canvasRef.current &&
-        noseTip &&
-        namedKeypoints &&
-        ctx
-      ) {
+      if (canvasRef.current && noseTip && namedKeypoints && ctx) {
         ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
         drawOnCanvas(ctx, noseTip, namedKeypoints);
 
