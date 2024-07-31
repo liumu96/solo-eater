@@ -44,6 +44,18 @@ const Danmaku: React.FC<DanmakuProps> = ({ visible = false }) => {
   }, []);
 
   // 添加新的弹幕并设置下一次的时间间隔
+  // const addDanmaku = () => {
+  //   const text = foodMessages[messageIndexRef.current];
+  //   setDanmakuList((prevList) => [...prevList, { id: Math.random(), text }]);
+  //   messageIndexRef.current =
+  //     (messageIndexRef.current + 1) % foodMessages.length;
+
+  //   const getRandomInterval = () => {
+  //     return Math.floor(Math.random() * (4000 - 3000 + 1)) + 3000;
+  //   };
+  //   timerRef.current = setTimeout(addDanmaku, getRandomInterval());
+  // };
+
   const addDanmaku = () => {
     const text = foodMessages[messageIndexRef.current];
     setDanmakuList((prevList) => [...prevList, { id: Math.random(), text }]);
@@ -57,8 +69,21 @@ const Danmaku: React.FC<DanmakuProps> = ({ visible = false }) => {
   };
 
   useEffect(() => {
-    addDanmaku();
-  }, []);
+    if (visible) {
+      addDanmaku();
+    } else {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+      setDanmakuList([]);
+    }
+
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, [visible]);
 
   // 清理超过一定数量的弹幕
   useEffect(() => {
