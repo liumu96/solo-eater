@@ -78,7 +78,7 @@ export const getMesh = (predictions: Prediction[]): MeshResult => {
     ];
     namedKeypoints["faceOval"] = faceOvalIndexes.map((d) => keypoints[d]);
 
-    noseTip = { ...keypoints[1], name: "nose tip" };
+    noseTip = { ...keypoints[195], name: "nose tip" };
     leftNose = { ...keypoints[279], name: "left nose" };
     rightNose = { ...keypoints[49], name: "right nose" };
 
@@ -116,24 +116,16 @@ export const getMesh = (predictions: Prediction[]): MeshResult => {
 
 export const drawOnCanvas = (
   ctx: CanvasRenderingContext2D | null,
-  leftEyePoint: Keypoint | null,
-  rightEyePoint: Keypoint | null,
+  noseTip: Keypoint | null,
   namedKeypoints: { [key: string]: Keypoint[] } | null
 ) => {
   if (ctx && namedKeypoints) {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-    if (leftEyePoint) {
+    if (noseTip) {
       ctx.beginPath();
-      ctx.arc(leftEyePoint.x, leftEyePoint.y, 1, 0, 2 * Math.PI);
+      ctx.arc(noseTip.x, noseTip.y, 1, 0, 2 * Math.PI);
       ctx.fillStyle = "aqua";
-      ctx.fill();
-    }
-
-    if (rightEyePoint) {
-      ctx.beginPath();
-      ctx.arc(rightEyePoint.x, rightEyePoint.y, 1, 0, 2 * Math.PI);
-      ctx.fillStyle = "red";
       ctx.fill();
     }
 
@@ -144,16 +136,9 @@ export const drawOnCanvas = (
         ctx.fillStyle = "aqua";
         ctx.fill();
 
-        if (leftEyePoint) {
+        if (noseTip) {
           ctx.beginPath();
-          ctx.moveTo(leftEyePoint.x, leftEyePoint.y);
-          ctx.lineTo(point.x, point.y);
-          ctx.stroke();
-        }
-
-        if (rightEyePoint) {
-          ctx.beginPath();
-          ctx.moveTo(rightEyePoint.x, rightEyePoint.y);
+          ctx.moveTo(noseTip.x, noseTip.y);
           ctx.lineTo(point.x, point.y);
           ctx.stroke();
         }

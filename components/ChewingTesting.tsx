@@ -4,7 +4,7 @@ import { useVideo } from "@/context/VideoContext";
 import { useFaceMesh } from "@/hooks/useFaceMesh";
 import { drawOnCanvas } from "@/utils/testing";
 import useSignalProcessing from "@/hooks/useSignalProcessing";
-import { avgFrequency } from "@/utils/avgFrequency";
+import { avgFrequency, avgFreq } from "@/utils/avgFrequency";
 import { useData } from "@/context/DataContext";
 
 interface ChewingTestingProps {
@@ -38,11 +38,11 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
   // const [chewingFrequency, setChewingFrequency] = useState<number | null>(null);
   const { chewingFrequency, setChewingFrequency, isEating, setIsEating } =
     useData();
-  const [cutOffFrequency, setCutOffFrequency] = useState(0.12);
+  const [cutOffFrequency, setCutOffFrequency] = useState(0.08);
   const [itemsNo, setItemsNo] = useState(240);
   const [gazingStartTime, setGazingStartTime] = useState<number | null>(null);
   const [reminder, setReminder] = useState<string | null>(null);
-  const windowSize = 2;
+  const windowSize = 6;
   const signalProcessingData = useSignalProcessing(
     animate,
     noseTip,
@@ -66,59 +66,62 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
     const calculateChewingFrequency = () => {
       // console.log("Filtered Peaks:", signalProcessingData.filteredPeaks);
       const timeNow = Date.now();
-      const frequency = avgFrequency(
+      const frequency = avgFreq(
         signalProcessingData.filteredPeaks,
         timeNow,
-        windowSize
+        windowSize,
+        0.5
       );
-      // console.log("Calculated Frequency:", frequency); // Debug log
-      setChewingFrequency(frequency);
+      const oneFrequency = avgFrequency(
+        signalProcessingData.filteredPeaks,
+        timeNow,
+        1
+      );
+      const twoFrequency = avgFrequency(
+        signalProcessingData.filteredPeaks,
+        timeNow,
+        2
+      );
+      const frequencies = [oneFrequency, twoFrequency, frequency]
+      //console.log("signalProcessingData.filteredPeaks", signalProcessingData.filteredPeaks);
+      //console.log("Calculated Frequency:", frequencies); // Debug log
+      setChewingFrequency(frequencies);
       (onFrequencyUpdate || defaultOnFrequencyUpdate)(frequency); // Use the provided function or the default one
     };
 
     // Calculate initially
     calculateChewingFrequency();
-
-    // Set up interval to calculate every second
+    console.log("Calculated Frequency:", chewingFrequency);
+    // Set up interval to calculate every second， 
     const interval = setInterval(() => {
       calculateChewingFrequency();
-    }, 800); // Every second
-
+    }, 2100); // Every second
+    //TODO
+    // 为什么随便设置一个时间就可以了， peaks的间距， 两秒内di yu 17， 张嘴持续几秒算吃饭
     // Clean up the interval when the component unmounts
     return () => clearInterval(interval);
-  }, [animate]);
+  }, [animate]); // Only run when the animation changes
 
-  useEffect(() => {
+  //useEffect(() => {
     // console.log("Chewing Frequency Updated:", chewingFrequency); // Debug log
-  }, [chewingFrequency]);
+  //}, [chewingFrequency]);
   useEffect(() => {
     if (isGazing) {
       // this is not needed setGazingStartTime(Date.now());
-      if (chewingFrequency === null || chewingFrequency < 17) {
+      if (chewingFrequency[2] === null || chewingFrequency[2] < 10) {
         setIsEating(false);
-        if (gazingStartTime === null) {
-          setGazingStartTime(Date.now());
-        } else {
-          const elapsedTime = (Date.now() - gazingStartTime) / 1000;
-          if (elapsedTime >= 2) {
-            setIsEating(false);
-            setReminder(
-              "Please don't forget to chew your food while watching the video."
-            );
-            setGazingStartTime(null);
-          }
-        }
+        setReminder(
+          "Please don't forget to chew your food while watching the video."
+        );
       } else {
         setIsEating(true);
         setReminder(null);
-        setGazingStartTime(null);
       }
-    } else if (gazingStartTime) {
+    } else {
       setIsEating(false);
-      setGazingStartTime;
       setReminder(null);
-    }
-  }, [chewingFrequency, isGazing]);
+      }
+    }, [chewingFrequency, isGazing]);
 
   useEffect(() => {
     if (!videoRef.current || typeof window === "undefined") return;
@@ -136,13 +139,12 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
     const drawCanvas = () => {
       if (
         canvasRef.current &&
-        leftEyePoint &&
-        rightEyePoint &&
+        noseTip &&
         namedKeypoints &&
         ctx
       ) {
         ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-        drawOnCanvas(ctx, leftEyePoint, rightEyePoint, namedKeypoints);
+        drawOnCanvas(ctx, noseTip, namedKeypoints);
 
         // Display whether the user is looking at the screen
         ctx.font = "16px Arial";

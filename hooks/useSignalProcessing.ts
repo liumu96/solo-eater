@@ -70,7 +70,9 @@ export default function useSignalProcessing(
   noseTip: { x: number; y: number } | null,
   newItem: SignalDataItem | null,
   cutOffFrequency: number,
-  itemsNo: number
+  itemsNo: number,
+  windowSize = 5,
+  threshold = 0.8
 ) {
   const dataRef = useRef<SignalProcessingResult>({
     data: [],
@@ -96,7 +98,7 @@ export default function useSignalProcessing(
     let filteredData = dataRef.current.filteredData;
     let nosePointDistance = dataRef.current.nosePointDistance;
 
-    if (data.length >= 10) {
+    if (data.length >= windowSize) {
       let prev;
       if (filteredData.length === 0) {
         prev = data.slice(-1)[0];
@@ -108,7 +110,7 @@ export default function useSignalProcessing(
       updateDataRef("herz", herz);
 
       let newFilteredItem = {
-        value: pointLowPassFilter(prev.value, newItem, 1, herz
+        value: pointLowPassFilter(prev.value, newItem, 1.5, herz
         ),
         time: newItem.time,
       };
@@ -117,9 +119,8 @@ export default function useSignalProcessing(
       const peakIndexes = findPeaksP3(filteredData, cutOffFrequency);
       const peaks = peakIndexes.map((i) => filteredData[i]);
       updateDataRef("peaks", peaks);
-
-      const windowSize = 5;
-      const threshold = 0.8; // set a threshold for the correlation coefficient
+      
+      // set a threshold for the correlation coefficient
 
       const correlationCoefficients = calculateCorrelation(
         filteredData,
@@ -178,7 +179,7 @@ export default function useSignalProcessing(
       updateDataRef("removedPeaks", []);
     }
     updateDataRef("data", [...data.slice(-itemsNo), newItem]);
-  }, [animate, newItem, noseTip, cutOffFrequency, itemsNo, dataRef.current.herz]);
+  }, [animate, newItem, noseTip, cutOffFrequency, itemsNo, dataRef]);
 
   return useMemo(() => {
     return {
