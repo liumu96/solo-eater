@@ -76,12 +76,7 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
         timeNow,
         1
       );
-      const twoFrequency = avgFrequency(
-        signalProcessingData.filteredPeaks,
-        timeNow,
-        2
-      );
-      const frequencies = [oneFrequency, twoFrequency, frequency]
+      const frequencies = [oneFrequency, frequency]
       //console.log("signalProcessingData.filteredPeaks", signalProcessingData.filteredPeaks);
       //console.log("Calculated Frequency:", frequencies); // Debug log
       setChewingFrequency(frequencies);
@@ -107,21 +102,25 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
   useEffect(() => {
     if (isGazing) {
       // this is not needed setGazingStartTime(Date.now());
-      if (chewingFrequency[2] === null || chewingFrequency[2] < 20) {
-        setIsEating(false);
-        setReminder(
+      if (isEating) {
+        if (chewingFrequency[1] === null ||chewingFrequency[1] === 0 || chewingFrequency[1] < 20){
+          setIsEating(false);
+          setReminder(
           "Please don't forget to chew your food while watching the video."
-        );
+          );
+        };
       } else {
-        setIsEating(true);
-        setReminder(null);
+        if (chewingFrequency[0] > 0 || chewingFrequency[0] > 20){
+          setIsEating(true);
+          setReminder(null);
+        }
       }
     } else {
       setIsEating(false);
-      setReminder(null);
+      setReminder("Not Looking at Screen.");
       }
     }, [chewingFrequency, isGazing]);
-
+  console.log("isEating", isEating);
   useEffect(() => {
     if (!videoRef.current || typeof window === "undefined") return;
 

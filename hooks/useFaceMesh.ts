@@ -83,7 +83,7 @@ export const useFaceMesh = (
             const { yaw, turn } = meshDataRef.current;
 
             // Define thresholds
-            const yawThreshold = 100;
+            //const yawThreshold = 100;
             const turnThreshold = 35;
             const UpperBound = 135;
 

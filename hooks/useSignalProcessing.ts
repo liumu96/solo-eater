@@ -71,7 +71,7 @@ export default function useSignalProcessing(
   newItem: SignalDataItem | null,
   cutOffFrequency: number,
   itemsNo: number,
-  windowSize = 5,
+  windowSize = 10,
   threshold = 0.85
 ) {
   const dataRef = useRef<SignalProcessingResult>({
@@ -179,7 +179,7 @@ export default function useSignalProcessing(
       updateDataRef("removedPeaks", []);
     }
     updateDataRef("data", [...data.slice(-itemsNo), newItem]);
-  }, [animate, newItem, noseTip, cutOffFrequency, itemsNo, dataRef]);
+  }, [animate, newItem, noseTip, cutOffFrequency, itemsNo, dataRef.current.herz]);
 
   return useMemo(() => {
     return {
