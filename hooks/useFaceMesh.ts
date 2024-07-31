@@ -62,19 +62,6 @@ export const useFaceMesh = (
             namedKeypoints,
           };
 
-          // Check if the user is looking at the screen
-          if (
-            namedKeypoints &&
-            namedKeypoints["leftEye"] &&
-            namedKeypoints["rightEye"]
-          ) {
-            const isLooking = isLookingAtScreen(
-              namedKeypoints["leftEye"],
-              namedKeypoints["rightEye"]
-            );
-            setLookingAtScreen(isLooking);
-          }
-
           // Determine if the person is looking forward and head is level
           const isLookingForwardAndLevel = () => {
             if (!meshDataRef.current.yaw || !meshDataRef.current.turn)
