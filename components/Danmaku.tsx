@@ -34,14 +34,14 @@ const Danmaku: React.FC<DanmakuProps> = ({ visible = false }) => {
   const messageIndexRef = useRef(0);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // 清理计时器
-  useEffect(() => {
-    return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-    };
-  }, []);
+  // // 清理计时器
+  // useEffect(() => {
+  //   return () => {
+  //     if (timerRef.current) {
+  //       clearTimeout(timerRef.current);
+  //     }
+  //   };
+  // }, []);
 
   // 添加新的弹幕并设置下一次的时间间隔
   // const addDanmaku = () => {
@@ -68,19 +68,34 @@ const Danmaku: React.FC<DanmakuProps> = ({ visible = false }) => {
     timerRef.current = setTimeout(addDanmaku, getRandomInterval());
   };
 
+  const [show, setShow] = useState(false);
+  const delayTimerRef = useRef<NodeJS.Timeout | null>(null);
   useEffect(() => {
     if (visible) {
+      // console.log("test1");
+      if (delayTimerRef.current) {
+        clearTimeout(delayTimerRef.current);
+      }
+      setShow(true);
       addDanmaku();
     } else {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-      setDanmakuList([]);
+      // console.log("test2");
+      delayTimerRef.current = setTimeout(() => {
+        // console.log("test3");
+        if (timerRef.current) {
+          clearTimeout(timerRef.current);
+        }
+        setShow(false);
+        setDanmakuList([]);
+      }, 3000);
     }
 
     return () => {
       if (timerRef.current) {
         clearTimeout(timerRef.current);
+      }
+      if (delayTimerRef.current) {
+        clearTimeout(delayTimerRef.current);
       }
     };
   }, [visible]);
@@ -93,7 +108,7 @@ const Danmaku: React.FC<DanmakuProps> = ({ visible = false }) => {
   }, [danmakuList]);
 
   return (
-    <div className={`danmaku-container ${visible ? "flex" : "hidden"}`}>
+    <div className={`danmaku-container ${show ? "flex" : "hidden"}`}>
       {danmakuList.map((danmaku) => (
         <div key={danmaku.id} className="danmaku-item">
           {danmaku.text}
