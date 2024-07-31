@@ -38,11 +38,11 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
   // const [chewingFrequency, setChewingFrequency] = useState<number | null>(null);
   const { chewingFrequency, setChewingFrequency, isEating, setIsEating } =
     useData();
-  const [cutOffFrequency, setCutOffFrequency] = useState(0.08);
+  const [cutOffFrequency, setCutOffFrequency] = useState(0.06);
   const [itemsNo, setItemsNo] = useState(240);
   const [gazingStartTime, setGazingStartTime] = useState<number | null>(null);
   const [reminder, setReminder] = useState<string | null>(null);
-  const windowSize = 6;
+  const windowSize = 3;
   const signalProcessingData = useSignalProcessing(
     animate,
     noseTip,
@@ -66,11 +66,10 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
     const calculateChewingFrequency = () => {
       // console.log("Filtered Peaks:", signalProcessingData.filteredPeaks);
       const timeNow = Date.now();
-      const frequency = avgFreq(
+      const frequency = avgFrequency(
         signalProcessingData.filteredPeaks,
         timeNow,
-        windowSize,
-        0.5
+        windowSize
       );
       const oneFrequency = avgFrequency(
         signalProcessingData.filteredPeaks,
@@ -95,7 +94,7 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
     // Set up interval to calculate every second， 
     const interval = setInterval(() => {
       calculateChewingFrequency();
-    }, 2100); // Every second
+    }, 800); // Every second
     //TODO
     // 为什么随便设置一个时间就可以了， peaks的间距， 两秒内di yu 17， 张嘴持续几秒算吃饭
     // Clean up the interval when the component unmounts
@@ -108,7 +107,7 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
   useEffect(() => {
     if (isGazing) {
       // this is not needed setGazingStartTime(Date.now());
-      if (chewingFrequency[2] === null || chewingFrequency[2] < 10) {
+      if (chewingFrequency[2] === null || chewingFrequency[2] < 20) {
         setIsEating(false);
         setReminder(
           "Please don't forget to chew your food while watching the video."

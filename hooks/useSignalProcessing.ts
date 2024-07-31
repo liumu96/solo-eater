@@ -72,7 +72,7 @@ export default function useSignalProcessing(
   cutOffFrequency: number,
   itemsNo: number,
   windowSize = 5,
-  threshold = 0.8
+  threshold = 0.85
 ) {
   const dataRef = useRef<SignalProcessingResult>({
     data: [],
@@ -110,7 +110,7 @@ export default function useSignalProcessing(
       updateDataRef("herz", herz);
 
       let newFilteredItem = {
-        value: pointLowPassFilter(prev.value, newItem, 1.5, herz
+        value: pointLowPassFilter(prev.value, newItem, 1, herz
         ),
         time: newItem.time,
       };
