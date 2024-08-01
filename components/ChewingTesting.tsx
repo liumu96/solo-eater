@@ -184,7 +184,7 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
       setIsEating(false);
       setReminder("Not Looking at Screen.");
     }
-    console.log("isEating", isEating, chewingFrequency, Date.now(), isGazing);
+    //console.log("isEating", isEating, chewingFrequency, Date.now(), isGazing);
   }, [chewingFrequency, isGazing]);
   // console.log("isEating", isEating);
   useEffect(() => {
