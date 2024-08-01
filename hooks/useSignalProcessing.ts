@@ -71,8 +71,8 @@ export default function useSignalProcessing(
   newItem: SignalDataItem | null,
   cutOffFrequency: number,
   itemsNo: number,
-  windowSize = 10,
-  threshold = 0.85
+  windowSize = 15,
+  threshold = 0.8
 ) {
   const dataRef = useRef<SignalProcessingResult>({
     data: [],
@@ -98,7 +98,7 @@ export default function useSignalProcessing(
     let filteredData = dataRef.current.filteredData;
     let nosePointDistance = dataRef.current.nosePointDistance;
 
-    if (data.length >= windowSize) {
+    if (data.length >= 2) {
       let prev;
       if (filteredData.length === 0) {
         prev = data.slice(-1)[0];
@@ -135,7 +135,7 @@ export default function useSignalProcessing(
           const correspondingCoefficient = correlationCoefficients?.find(
             (coefficient) => coefficient.time.getTime() === peak.time.getTime()
           );
-
+          //console.log("correspondingCoefficient", correspondingCoefficient);
           const text = correspondingCoefficient
             ? correspondingCoefficient.value.toFixed(2)
             : "";
@@ -179,7 +179,7 @@ export default function useSignalProcessing(
       updateDataRef("removedPeaks", []);
     }
     updateDataRef("data", [...data.slice(-itemsNo), newItem]);
-  }, [animate, newItem, noseTip, cutOffFrequency, itemsNo, dataRef.current.herz]);
+  }, [animate, newItem, noseTip, dataRef.current.filteredPeaks]);
 
   return useMemo(() => {
     return {

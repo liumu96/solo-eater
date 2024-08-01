@@ -22,6 +22,7 @@ export default function findPeaksP3(signal, threshold) {
             const rightSlope = signal[minIndex] - signal[index];
             leftSlopes.push(leftSlope);
             rightSlopes.push(rightSlope);
+            //console.log(leftSlope, rightSlope);
         } else {
             leftSlopes.push(0);
             rightSlopes.push(0);

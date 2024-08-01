@@ -92,12 +92,14 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
   const participantID = userInfo.username; // participantID
   //const pauseTime = pauseTimes[String(participantID)] || 3;
 
-  const [cutOffFrequency, setCutOffFrequency] = useState(0.06);
+  const [cutOffFrequency, setCutOffFrequency] = useState(0.14);
   const [itemsNo, setItemsNo] = useState(240);
   const [gazingStartTime, setGazingStartTime] = useState<number | null>(null);
   const [reminder, setReminder] = useState<string | null>(null);
-  const windowSize = 3; //pauseTime;// pauseTimes[String(participantID)] || 3
-  const minFreqThreshold = 20; //minFrequency[String(participantID)] || 20;
+  const windowSize = 7; //pauseTime;// pauseTimes[String(participantID)] || 3
+  const minFreqThreshold = 9; //minFrequency[String(participantID)] || 20;
+  const [chewingStopTimer, setChewingStopTimer] = useState<NodeJS.Timeout | null>(null);
+  const [chewingStartTimer, setChewingStartTimer] = useState<NodeJS.Timeout | null>(null);
   const signalProcessingData = useSignalProcessing(
     animate,
     noseTip,
@@ -129,22 +131,22 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
       const oneFrequency = avgFrequency(
         signalProcessingData.filteredPeaks,
         timeNow,
-        1
+        3
       );
+      //console.log("Frequency", frequency);
       const frequencies = [oneFrequency, frequency];
       //console.log("signalProcessingData.filteredPeaks", signalProcessingData.filteredPeaks);
       //console.log("Calculated Frequency:", frequencies); // Debug log
       setChewingFrequency(frequencies);
       (onFrequencyUpdate || defaultOnFrequencyUpdate)(frequency); // Use the provided function or the default one
     };
-
     // Calculate initially
     calculateChewingFrequency();
     //console.log("Calculated Frequency:", chewingFrequency);
     // Set up interval to calculate every second，
     const interval = setInterval(() => {
       calculateChewingFrequency();
-    }, 800); // Every second
+    }, 2000); // Every second
     //TODO
     // 为什么随便设置一个时间就可以了， peaks的间距， 两秒内di yu 17， 张嘴持续几秒算吃饭
     // Clean up the interval when the component unmounts
@@ -156,28 +158,33 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
   //}, [chewingFrequency]);
   useEffect(() => {
     if (isGazing) {
-      // this is not needed setGazingStartTime(Date.now());
       if (isEating) {
         if (
           chewingFrequency[1] === null ||
-          chewingFrequency[1] === 0 ||
-          chewingFrequency[1] < minFreqThreshold
+          (chewingFrequency[1] < minFreqThreshold && chewingFrequency[0] < minFreqThreshold)
         ) {
-          setIsEating(false);
-          setReminder(
-            "Please don't forget to chew your food while watching the video."
-          );
+          const timer = setTimeout(() => {
+            setIsEating(false);
+            setReminder("Please don't forget to chew your food while watching the video.");
+            setChewingStopTimer(null); // Clear timer reference
+          }, 400); // CALCUATE THE TIME
+          setChewingStopTimer(timer);
         }
       } else {
-        if (chewingFrequency[0] > 0 || chewingFrequency[0] > minFreqThreshold) {
-          setIsEating(true);
-          setReminder(null);
+        if (chewingFrequency[0] > 0 || chewingFrequency[0] >= minFreqThreshold) {
+          const timer = setTimeout(() => {
+            setIsEating(true);
+            setReminder(null);
+            setChewingStartTimer(null); // Clear timer reference
+          }, 200); // CALCUATE THE TIME
+          setChewingStartTimer(timer);
         }
       }
     } else {
       setIsEating(false);
       setReminder("Not Looking at Screen.");
     }
+    console.log("isEating", isEating, chewingFrequency, Date.now(), isGazing);
   }, [chewingFrequency, isGazing]);
   // console.log("isEating", isEating);
   useEffect(() => {
