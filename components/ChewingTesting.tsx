@@ -92,7 +92,7 @@ const ChewingTesting: React.FC<ChewingTestingProps> = ({
   const participantID = userInfo.username; // participantID
   //const pauseTime = pauseTimes[String(participantID)] || 3;
 
-  const [cutOffFrequency, setCutOffFrequency] = useState(0.12);
+  const [cutOffFrequency, setCutOffFrequency] = useState(0.14);
   const [itemsNo, setItemsNo] = useState(240);
   const [gazingStartTime, setGazingStartTime] = useState<number | null>(null);
   const [reminder, setReminder] = useState<string | null>(null);
