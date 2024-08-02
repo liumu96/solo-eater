@@ -27,6 +27,14 @@ const foodMessages = [
   '💁‍♂️ "Good food is the foundation of genuine happiness." – Auguste Escoffier ',
   "💡 Discover the subtle flavors in each bite. ",
   "😌 Your meal smells wonderful! Let the aromas soothe you",
+  "🥘 So many tasty ingredients!",
+  "😍 🥄 Slow down and enjoy the tranquility of each bite",
+  "🌋 Wow, your meal is a flavor explosion!",
+  "🧘‍♀️ Breathe in those delightful aromas. Then savor the taste",
+  "🏆 Slow and steady wins the race.",
+  "🎁 This meal is a gift. Take your time and appreciate it",
+  "🤩 Feel the different textures as you slowly chew",
+  "😌 Each bite is a moment of peace. Savor it",
 ];
 
 const Danmaku: React.FC<DanmakuProps> = ({ visible = false }) => {
